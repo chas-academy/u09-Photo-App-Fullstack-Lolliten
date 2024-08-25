@@ -2,6 +2,11 @@ import express from 'express';
 import multer from 'multer';
 import cors from 'cors';
 import { Path } from 'react-router-dom';
+import path from 'path';
+
+import dotenv from "dotenv";
+
+dotenv.config(); // Load environment variables from a .env file into process.env
 
 import ImageModel from './src/model/imageModel.js';
 import connectDB from './src/db/db.js';
@@ -27,6 +32,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+// Routes
 app.post('/api/upload', upload.single('image'), async(req, res) => {
   try {
     console.log(req.file) //test
@@ -55,6 +61,9 @@ app.get('/img/:id', async (req, res) => {
           res.send({"Error": "Unable to get image"})
         }
 })
+
+// Middleware before uploading picture
+app.post("/auth/register", upload.single("picture"), register)
 
 const port = process.env.PORT || 3000;
 
