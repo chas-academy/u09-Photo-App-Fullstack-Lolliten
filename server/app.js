@@ -1,6 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import cors from 'cors';
+import { Path } from 'react-router-dom';
 
 import ImageModel from './src/model/imageModel.js';
 import connectDB from './src/db/db.js';
@@ -10,6 +11,7 @@ connectDB;
 
 const app = express();
 app.use(express.json());
+app.use(express.static("uploads")) //imported path but not sure will work
 
 // Enable CORS for all routes below
 app.use(cors());
@@ -41,6 +43,18 @@ app.post('/api/upload', upload.single('image'), async(req, res) => {
   } 
 });
 
+app.get('/img/:id', async (req, res) => {
+  const {id} = req.params
+    try {
+      const image = await ImageModel.findById(id)
+      if(!image) res.send({"msg":"Image Not Found"})
+
+        const imagePath = path.join(__dirname, "uploads", image.filename)
+        res.sendFile(imagePath)
+        } catch (error) {
+          res.send({"Error": "Unable to get image"})
+        }
+})
 
 const port = process.env.PORT || 3000;
 
@@ -50,13 +64,6 @@ app.listen(port, () => {
 
 
 /*
-// User Routes
-app.use("/api/user", userRouter);
-
-// Profile Routes
-app.use("/api", profileRouter);
-
-
 // Sets up CORS to allow requests from the frontend domain and allows cookies to be included
 app.use(
   cors({
@@ -65,21 +72,4 @@ app.use(
     credentials: true,
   })
 );
-
-const connectDB = async () => {
-    try {
-      const mongoURI =
-        "mongodb://lolo:Password123@localhost:27017/"; //do i need username and password to connect? 
-      await connect(mongoURI);
-      console.log("MongoDB Connected...");
-    } catch (err) {
-      console.error(err.message);
-      console.log("Connection failed");
-      // Exit process with failure
-      process.exit(1);
-    }
-  };
-  connectDB();
-
-  import { connect } from "mongoose";
 */
