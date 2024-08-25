@@ -1,39 +1,43 @@
 import express from 'express';
-import multer from'multer';
-import mongoose from 'mongoose';
+import multer from 'multer';
+import cors from 'cors';
+
 import ImageModel from './src/model/imageModel.js';
 import connectDB from './src/db/db.js';
 
+// Initialize Database Connection
 connectDB;
 
 const app = express();
+app.use(express.json());
 
+// Enable CORS for all routes below
+app.use(cors());
 
 //Multer config
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
+    destination: function (_req, _file, cb) {
         cb(null, 'uploads');
     },
-    filename: function (req, file, cb) { 
+    filename: function (_req, file, cb) { 
       cb(null, file.originalname)      //Consider adding info, like < Date,now()+ "-" + > , or other info
     }
 });
 const upload = multer({ storage });
 
-app.post('/api/upload', upload.single('image'), async(req, res) => { //'image' might need to be changed?
+app.post('/api/upload', upload.single('image'), async(req, res) => {
   try {
     console.log(req.file) //test
     const { path, filename } = req.file
     const imagerefs = await ImageModel({ path, filename })
     await imagerefs.save()
-    console.log(path, filename)
+   
     res.send({ "msg": "Image uploaded successfully" })
     
     console.log(path, filename) //test
   } catch (error) {
     console.log(error)
         res.send({ "error": "Unable to upload image" })
-       
   } 
 });
 
