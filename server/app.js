@@ -1,15 +1,16 @@
 import express from 'express';
 import multer from 'multer';
 import cors from 'cors';
-import { Path } from 'react-router-dom';
 import path from 'path';
-
 import dotenv from "dotenv";
-
-dotenv.config(); // Load environment variables from a .env file into process.env
-
+import authRoutes from "/routes/auth.js" //Skapa logiken i auth
+import userRoutes from "/routes/users.js" //skapa logiken i users
+import { register } from "./src/controllers/auth.js";
+import User from './src/model/User.js';
 import ImageModel from './src/model/imageModel.js';
 import connectDB from './src/db/db.js';
+
+dotenv.config(); // Load environment variables from a .env file into process.env
 
 // Initialize Database Connection
 connectDB;
@@ -33,12 +34,16 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Routes
+app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
+
+// Routes with files
 app.post('/api/upload', upload.single('image'), async(req, res) => {
   try {
     console.log(req.file) //test
     const { path, filename } = req.file
     const imagerefs = await ImageModel({ path, filename })
-    await imagerefs.save()
+    await imagerefs.save()                                //is this where the insertOne goes wrong?
    
     res.send({ "msg": "Image uploaded successfully" })
     
@@ -62,8 +67,9 @@ app.get('/img/:id', async (req, res) => {
         }
 })
 
-// Middleware before uploading picture
-app.post("/auth/register", upload.single("picture"), register)
+
+app.post("/auth/register", upload.single("picture"), register) // Middleware before uploading picture
+
 
 const port = process.env.PORT || 3000;
 
@@ -73,6 +79,8 @@ app.listen(port, () => {
 
 
 /*
+** Consider changing the import image method to import.meta.url if current dosnt work. **
+
 // Sets up CORS to allow requests from the frontend domain and allows cookies to be included
 app.use(
   cors({

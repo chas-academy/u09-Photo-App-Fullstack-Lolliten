@@ -14,6 +14,22 @@
 
     Backend setup klar.
 
+    Forts.
+
+    Skapa fil-system:
+        - models
+        - controllers
+        - views
+        - routes
+        - middleware
+
+        - main.js: 
+        - app.js:
+        - index.js: 
+
+    - Skapa Crud i routes users
+    - 
+
     
     Frontend: 
 
@@ -25,7 +41,13 @@
     - npm install
     - npm run dev (startar vite/react)
 
-   - fetch eller axios för att koppla ihop front med backend api.
+    - fetch eller axios för att koppla ihop front med backend api.
+
+    - skapa fil-system
+
+    - Använd Redux istället för useStates, skapar states globalt för hela front
+
+    - 
 
 MongoDB:
 
