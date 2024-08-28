@@ -30,7 +30,7 @@ const UserSchema = new mongoose.Schema(
             default: "",
         },
         friends:{
-            type: array,
+            type: Array,
             default: [],
         },
         picturePath:{
@@ -40,7 +40,7 @@ const UserSchema = new mongoose.Schema(
 }, {timestamps: true} //gives time and date info
 );
 
-const User = mongoose.model("'User", UserSchema)
+const User = mongoose.model("User", UserSchema)
 
 export default User;
 

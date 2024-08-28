@@ -3,11 +3,11 @@ import multer from 'multer';
 import cors from 'cors';
 import path from 'path';
 import dotenv from "dotenv";
-import authRoutes from "/routes/auth.js" //Skapa logiken i auth
-import userRoutes from "/routes/users.js" //skapa logiken i users
+import authRoutes from "./src/routes/auth.js" //didnt have a authRoutes in auth.js so added it
+import userRoutes from "./src/routes/users.js"; //didnt have a userRoutes in user.js so added it
 import { register } from "./src/controllers/auth.js";
-import User from './src/model/User.js';
-import ImageModel from './src/model/imageModel.js';
+import User from "./src/models/User.js";
+import ImageModel from './src/models/imageModel.js';
 import connectDB from './src/db/db.js';
 
 dotenv.config(); // Load environment variables from a .env file into process.env
@@ -32,10 +32,6 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage });
-
-// Routes
-app.use("/auth", authRoutes);
-app.use("/users", userRoutes);
 
 // Routes with files
 app.post('/api/upload', upload.single('image'), async(req, res) => {
@@ -67,9 +63,11 @@ app.get('/img/:id', async (req, res) => {
         }
 })
 
-
 app.post("/auth/register", upload.single("picture"), register) // Middleware before uploading picture
 
+// Routes
+app.use("/auth", authRoutes); //changed to authRoutes in routes/auth.js
+app.use("/users", userRoutes); // changed to userRoutes in routes/user.js
 
 const port = process.env.PORT || 3000;
 

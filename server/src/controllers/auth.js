@@ -1,7 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { User } from "./src/model/User.js";
-import { error } from "server/router"; //create error message??
+import User from "../models/User.js";
 
 // Register User
 export const register = async (req, res) => {

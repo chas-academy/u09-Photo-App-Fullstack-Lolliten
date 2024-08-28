@@ -1,7 +1,9 @@
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
-import WelcomePage from "pages/welcomePage"
-import LoginPage from "pages/loginPage"
-import ProfilePage from "pages/profilePage"
+/*import WelcomePage from "../pages/WelcomePage";
+import LoginPage from "../pages/LoginPage";
+import ProfilePage from "../pages/ProfilePage";*/
+
+/* FAILS TO IMPORT ABOVE */
 
 function App() {
 
@@ -20,4 +22,4 @@ function App() {
     </>
 }
 
-export default App
+export default App;

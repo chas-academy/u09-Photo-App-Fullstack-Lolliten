@@ -1,11 +1,11 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.jsx'
-import './index.css'
-import authReducer from "./state"
-import { configureStore } from '@reduxjs/toolkit'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App.jsx';
+//import './index.css';     //Importera styling här sen
+import authReducer from "./reduxConfig.jsx";
+import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from "react-redux"; // kolla package.json, bara redux toolkit installerat, räcker de?
-/* OPTIONAL
+/* OPTIONAL */
 import {
 persistStore,
 persistReducer,
@@ -14,18 +14,18 @@ REHYDRATE,
 PAUSE,
 PERSIST,
 PURGE,
-REGISTER
+REGISTER,
 } from "redux-persist";
-*/
-import storage from "redux-persist/lib/storage"
+
+import storage from "redux-persist/lib/storage";
 import { PersistGate } from "redux-persist/integration/react";
 //Persist is for state, and local storage
 
 // Config
 const persistConfig = { key: "root", storage, version: 1 };
-const persistReducer = persistReducer(persistConfig, authReducer);
+const persistedReducer = persistReducer(persistConfig, authReducer);
 const store = configureStore({
-  reducer: persistReducer,
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
@@ -43,5 +43,3 @@ createRoot(document.getElementById('root')).render(
     </Provider>
   </StrictMode>,
 )
-
-/* Info om Redux  och hur det ska skrivas finns på Redux docs */
