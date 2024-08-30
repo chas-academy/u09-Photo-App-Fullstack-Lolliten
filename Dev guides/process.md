@@ -104,7 +104,4 @@ git fetch origin
 git checkout 5-check-appfileuploaderjsx
 
 git fetch origin
-git checkout 3-check-db-conn
-
-git fetch origin
 git checkout 4-create-login-form
