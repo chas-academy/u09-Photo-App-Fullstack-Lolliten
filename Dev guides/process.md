@@ -95,3 +95,16 @@ Cors:
     (kom ihåg import cors i komponenter och app.use(cors()) i app.jsx)
     (cors kan användas bara på vissa routes (endpoints) men vanligast sätta app.use(cors()) i början av projekt då följer alla routes under där cors)
    
+
+## To Do:
+
+Branches with issues:
+
+git fetch origin
+git checkout 5-check-appfileuploaderjsx
+
+git fetch origin
+git checkout 3-check-db-conn
+
+git fetch origin
+git checkout 4-create-login-form
