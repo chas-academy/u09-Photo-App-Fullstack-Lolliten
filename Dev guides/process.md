@@ -47,7 +47,24 @@
 
     - Använd Redux istället för useStates, skapar states globalt för hela front
 
-    - 
+    - package.json eslint config: ??  
+    "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+    "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 
 MongoDB:
 
@@ -105,3 +122,4 @@ git checkout 5-check-appfileuploaderjsx
 
 git fetch origin
 git checkout 4-create-login-form
+
