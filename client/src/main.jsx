@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
 //import './index.css';     //Importera styling här sen
-import authReducer from "./reduxConfig.jsx";
+import authReducer from "./state/reduxConfig.jsx";
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from "react-redux"; // kolla package.json, bara redux toolkit installerat, räcker de?
 /* OPTIONAL */
