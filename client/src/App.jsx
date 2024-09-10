@@ -1,6 +1,6 @@
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import WelcomePage from "./components/pages/welcomePage/welcomePage";
-import LoginPage from "./components/pages/LoginPage/loginPage";
+import LoginPage from "./components/pages/loginPage";
 import ProfilePage from "./components/pages/ProfilePage/profilePage";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";

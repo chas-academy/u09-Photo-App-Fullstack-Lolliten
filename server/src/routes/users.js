@@ -2,20 +2,18 @@ import express from "express";
 import {
     getUser, 
     getUserFriends,
-    //addRemoveFriend,
+    addRemoveFriend,
 } from "../controllers/users.js";
-//import { verifyToken } from "../middleware/auth.js";
+import { verifyToken } from "../middleware/auth.js";
 
-const userRoutes = express.Router(); //express router
+const userRoutes = express.Router();
 
-// C R U D
+/* Read */
+userRoutes.get("/:id", verifyToken, getUser);
+userRoutes.get("/:id/friends", verifyToken, getUserFriends);
 
-// Read
-userRoutes.get("/:id", /*verifyToken,*/ getUser);
-userRoutes.get("/:id/friends", /*verifyToken,*/ getUserFriends);
-
-// Update
-//router.patch("/:id/:friendId", verifyToken, addRemoveFriend);
+/* Update */
+userRoutes.patch("/:id/:friendId", verifyToken, addRemoveFriend);
 
 export default userRoutes;
  

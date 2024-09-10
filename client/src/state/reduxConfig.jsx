@@ -2,7 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     mode: "light", //config global
-    user: null, //start with null
+    user: {
+        isLoggedIn: false,
+    }, //start with null
     token: null, //auth info
     posts: [],
 };
