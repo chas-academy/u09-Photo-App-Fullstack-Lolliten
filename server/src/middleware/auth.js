@@ -20,6 +20,7 @@ export const verifyToken = async (req, res) => { //export makes verifyToken avai
   }
 };
 
+//import to every router needed in
 /*
 Where should the expire time be??
 process.env.JWT_TOKEN, {expiresIn: 3600});

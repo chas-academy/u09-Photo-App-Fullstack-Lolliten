@@ -1,7 +1,7 @@
 import { connect } from "mongoose";
 import dotenv from "dotenv";
 
-dotenv.config(); // Load environment variables from a .env file into process.env
+dotenv.config();
 
 const connectDB = async () => {
   try {
@@ -15,7 +15,6 @@ const connectDB = async () => {
   } catch (err) {
     console.error(err.message);
     console.log("Connection failed");
-    // Exit process with failure
     process.exit(1);
   }
 };
