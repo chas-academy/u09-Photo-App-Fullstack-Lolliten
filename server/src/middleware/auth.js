@@ -1,22 +1,23 @@
 import jwt from "jsonwebtoken";
 
-export const verifyToken = async (req, res) => { //export makes verifyToken available in other modules
+export const verifyToken = async (req, res, next) => { // Added 'next' parameter
   try {
-    let token = req.header("Authorization"); //extracts the authorization header from the incoming request.
+    let token = req.header("Authorization");
 
     if (!token) {
       return res.status(403).send("Access denied!");
     }
 
-    if (token.startWith("Bearer ")) {
-      token = token.slice(7, token.lenght).trimLeft(); //The slice method is used to extract the actual token without the "Bearer " prefix.
+    if (token.startsWith("Bearer ")) {
+      token = token.slice(7).trim();
     }
 
-    const verified = jwt.verify(token, process.env.JWT_SECRET); //the secret key stored in .env
-    req.user = verified; //If the verification is successful, the decoded user information is attached to the req.user property of the request object.
-    next(); //next middleware function in the request handling chain. 
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = verified;
+    next();
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Error in verifyToken:", err);
+    res.status(500).json({ message: "Invalid Token" });
   }
 };
 

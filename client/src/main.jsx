@@ -1,11 +1,10 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
-//import './index.css';     //Importera styling här sen
+//import './index.css';
 import authReducer from "./state/reduxConfig.jsx";
 import { configureStore } from '@reduxjs/toolkit';
-import { Provider } from "react-redux"; // kolla package.json, bara redux toolkit installerat, räcker de?
-/* OPTIONAL */
+import { Provider } from "react-redux";
 import {
 persistStore,
 persistReducer,
@@ -16,12 +15,10 @@ PERSIST,
 PURGE,
 REGISTER,
 } from "redux-persist";
-
 import storage from "redux-persist/lib/storage";
 import { PersistGate } from "redux-persist/integration/react";
-//Persist is for state, and local storage
 
-// Config
+/* Config */
 const persistConfig = { key: "root", storage, version: 1 };
 const persistedReducer = persistReducer(persistConfig, authReducer);
 const store = configureStore({

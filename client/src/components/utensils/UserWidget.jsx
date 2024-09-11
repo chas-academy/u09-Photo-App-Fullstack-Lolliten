@@ -5,9 +5,9 @@ import {
   WorkOutlineOutlined,
 } from "@mui/icons-material";
 import { Box, Typography, Divider, useTheme } from "@mui/material";
-import UserImage from "components/UserImage";
-import FlexBetween from "components/FlexBetween";
-import WidgetWrapper from "components/WidgetWrapper";
+import UserImage from "../utensils/Userimage";
+import FlexBetween from "../utensils/FlexBetween";
+import WidgetWrapper from "../utensils/WidgetWrapper";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -22,12 +22,22 @@ const UserWidget = ({ userId, picturePath }) => {
   const main = palette.neutral.main;
 
   const getUser = async () => {
-    const response = await fetch(`http://localhost:3001/users/${userId}`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await response.json();
-    setUser(data);
+    try {
+      const response = await fetch(`http://localhost:3000/users/${userId}`, {
+        method: "GET",
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setUser(data);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+    }
   };
 
   useEffect(() => {
@@ -41,7 +51,7 @@ const UserWidget = ({ userId, picturePath }) => {
   const {
     firstName,
     lastName,
-    friends,
+    friends = [],
   } = user;
 
   return (

@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "../../state/reduxConfig.jsx";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "../utensils/FlexBetween.jsx";
+import { setLogin } from "../../state/reduxConfig.jsx"; //needed?
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
@@ -39,7 +40,18 @@ const Navbar = () => {
   const primaryLight = theme.palette.primary.light;
   const alt = theme.palette.background.alt;
 
-  let fullName = ""; //by default empty string
+  const goToProfile = () => {
+    if (user) {
+      navigate(`/profile/${user._id}`);
+    }
+  };
+
+  const handleLogout = () => {
+    dispatch(setLogout());
+    navigate("/");
+  };
+
+  let fullName = ""; //default
 
   if (user) {
     fullName = `${user.firstName} ${user.lastName}`; //if user is logged in then name appear
@@ -52,7 +64,7 @@ const Navbar = () => {
           fontWeight="bold"
           fontSize="clamp(1rem, 2rem, 2.25rem)"
           color="primary"
-          onClick={() => navigate("/home")}
+          onClick={() => navigate("/")}
           sx={{
             "&:hover": {
               color: primaryLight,
@@ -108,10 +120,10 @@ const Navbar = () => {
               }}
               input={<InputBase />}
             >
-              <MenuItem value={fullName}>
+              <MenuItem value={fullName} onClick={goToProfile}>
                 <Typography>{fullName}</Typography>
               </MenuItem>
-              <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
+              <MenuItem onClick={handleLogout}>Log Out</MenuItem>
             </Select>
           </FormControl>
         </FlexBetween>
@@ -183,10 +195,10 @@ const Navbar = () => {
                 }}
                 input={<InputBase />}
               >
-                <MenuItem value={fullName}>
+                <MenuItem value={fullName} onClick={goToProfile}>
                   <Typography>{fullName}</Typography>
                 </MenuItem>
-                <MenuItem onClick={() => dispatch(setLogout())}>
+                <MenuItem onClick={handleLogout}>
                   Log Out
                 </MenuItem>
               </Select>
