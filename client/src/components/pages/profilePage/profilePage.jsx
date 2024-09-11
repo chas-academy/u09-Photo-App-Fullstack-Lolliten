@@ -3,16 +3,17 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Navbar from "../../scenes/Navbar";
-//import FriendListWidget from "../../utensils/FriendListwidget";
-//import MyPostWidget from "../../utensils/MyPostWidget";
-//import PostsWidget from "../../utensils/PostWidget";
-//import UserWidget from "../../utensils/UserWidget";
+import FriendListWidget from "../../utensils/FriendListWidget";
+import MyPostWidget from "../../utensils/MyPostWidget";
+import UserWidget from "../../utensils/UserWidget";
+import PostWidget from "../../utensils/PostWidget";
 
 const ProfilePage = () => {
   const [user, setUser] = useState({
     username: '',
     email: '',
-  });   //was null first, but means its uncontrollable wheras I need a controlled in the component
+    picturePath: '',
+  });   //was null first, but it was uncontrollable wheras I need a controlled in the component
   const { userId } = useParams();
   const token = useSelector((state) => state.token);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
@@ -26,9 +27,9 @@ const ProfilePage = () => {
     setUser(data);
   };
 
-  useEffect(() => { // is this uncontrolled ? ? ?
+  useEffect(() => {
     getUser();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!user) return null;
 
@@ -53,7 +54,7 @@ const ProfilePage = () => {
         >
           <MyPostWidget picturePath={user.picturePath} />
           <Box m="2rem 0" />
-          <PostsWidget userId={userId} isProfile />
+          <PostWidget userId={userId} isProfile />
         </Box>
       </Box>
     </Box>

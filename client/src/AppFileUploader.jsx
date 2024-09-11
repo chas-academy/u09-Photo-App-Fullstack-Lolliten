@@ -7,7 +7,7 @@ function App() {
 
   const handleImageChange = (event) => {
     const img = event.target.files[0];
-    // Validate image file (optional, customize as needed)
+    // Validate image file (optional, customize as neded)
     if (!img || !img.type.match("image")) {
       console.error("Please select a valid image file.");
       return;

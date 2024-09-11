@@ -18,6 +18,8 @@ const authRoutes = express.Router();
 
 authRoutes.post("/login", login);
 
+authRoutes.post("/profile/:id");
+
 authRoutes.post("/register", upload.single("picture"), register); // Middleware before uploading picture
 
 export default authRoutes;
