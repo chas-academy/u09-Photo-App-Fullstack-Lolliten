@@ -11,6 +11,7 @@ import Post from "./src/models/Post.js";
 import { verifyToken } from "./src/middleware/auth.js";
 import { createPost } from "./src/controllers/posts.js";
 import connectDB from "./src/db/db.js";
+import searchRoutes from "./src/routes/search.js";
 
 dotenv.config();
 
@@ -73,6 +74,8 @@ app.post("/post", verifyToken, upload.single("picture"), createPost); //createPo
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", postsRoutes);
+
+app.use("/search", searchRoutes)
 
 const port = process.env.PORT || 3000;
 

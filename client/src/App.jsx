@@ -7,11 +7,13 @@ import { useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "./theme.js";
+import { SearchResults } from "./components/scenes/Navbar.jsx"
 
 function App() {
     const mode = useSelector((state) => state.mode);
     const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
 
+    // searcj route rightly import ???
   return (
     <div className="app">
       <BrowserRouter>
@@ -21,7 +23,8 @@ function App() {
           <Route path="/" element={<LoginPage />} />
           <Route path="/welcome" element={<WelcomePage />} />
           <Route path="/profile/:userId" element={<ProfilePage />} />
-        </Routes>
+          <Route path="/search-results" element={<SearchResults />} />
+          </Routes>
         </ThemeProvider>
       </BrowserRouter>
     </div>
