@@ -1,27 +1,23 @@
-import { json } from "express";
+//import { json } from "express"; //needed ?
 import User from "../models/User.js";
 
 /* Read */
 export const getUser = async (req, res) => {
   try {
-    const { id } = req.params; // To grab id from choosen string
-    console.log("Fetching user with id:", id);
-    const user = await User.findById(id); //To grab user from id
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    const { id } = req.params;
+    console.log("Fetching user with id:", id); //test
+    const user = await User.findById(id);
     res.status(200).json(user);
   } catch (err) {
     console.error("Error in getUser:", err);
-    res.status(500).json({ message: "Server error", error: err.message });
+    res.status(404).json({ message: err.message });
   }
 };
 
 export const getUserFriends = async (req, res) => {
   try {
-    const { id } = req.params; // To grab id from choosen string
-    console.log("Fetching friends for user id:", id);
-    const user = await User.findById(id); //To grab user from id
+    const { id } = req.params; 
+    const user = await User.findById(id); 
 
     const friends = await Promise.all(
       //Multiple calls to the api
@@ -34,10 +30,9 @@ export const getUserFriends = async (req, res) => {
         return { _id, firstName, lastName, picturePath };
       }
     );
-    res.status(200), json(formattedFriends);
+    res.status(200).json(formattedFriends); // Fixed: Changed status(200), json to status(200).json
   } catch (err) {
-    console.error("Error in getUserFriends:", err);
-    res.status(500).json({ message: "Server error", error: err.message });
+    res.status(404).json({ message: "Server error", error: err.message });
   }
 };
 

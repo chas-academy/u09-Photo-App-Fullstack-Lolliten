@@ -14,12 +14,14 @@ const storage = multer.diskStorage({
   });
   const upload = multer({ storage }); //defining upload
 
+
 const authRoutes = express.Router();
+
 
 authRoutes.post("/login", login);
 
-authRoutes.post("/profile/:id");
+authRoutes.post("/profile/:id"); // move ?
 
-authRoutes.post("/register", upload.single("picture"), register); // Middleware before uploading picture
+authRoutes.post("/register", upload.single("picture"), register); // Move ?? Middleware before uploading picture
 
 export default authRoutes;
