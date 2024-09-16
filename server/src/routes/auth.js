@@ -18,7 +18,7 @@ const authRoutes = express.Router();
 
 authRoutes.post("/login", login);
 
-authRoutes.post("/profile/:id");
+authRoutes.get("/profile/:userId"); // should it be a route for only geteting id or for id for profile?
 
 authRoutes.post("/register", upload.single("picture"), register); // Middleware before uploading picture
 

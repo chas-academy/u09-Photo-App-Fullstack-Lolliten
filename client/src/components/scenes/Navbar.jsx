@@ -20,17 +20,16 @@ import {
   Menu,
   Close,
 } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
-import { setMode, setLogout } from "../../state/reduxConfig.jsx";
-import { useNavigate } from "react-router-dom";
-import FlexBetween from "../utensils/FlexBetween.jsx";
-import { setLogin } from "../../state/reduxConfig.jsx"; //needed?
 import {
-  setSearchQuery,
+  setSearchQuery, // Fix this state
   setSearchLoading,
   setSearchResults,
   setSearchError,
 } from "../../state/reduxConfig.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { setMode, setLogout } from "../../state/reduxConfig.jsx";
+import { useNavigate } from "react-router-dom";
+import FlexBetween from "../utensils/FlexBetween.jsx";
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
@@ -48,18 +47,18 @@ const Navbar = () => {
   const alt = theme.palette.background.alt;
 
   const handleSearchChange = (event) => {
-    // setSearchQuery(value ? ) ???
     setSearchQuery(event.target.value);
     console.log(event.target.value);
   };
 
   const handleSearchClick = async () => {
+    console.log("Serachquery a string?", searchQuery); // test
     try {
       dispatch(setSearchQuery(searchQuery));
       dispatch(setSearchLoading(true));
 
       const response = await fetch(
-        `http://localhost:3000/search?q=${searchQuery}`,
+        `http://localhost:3000/search?q=${searchQuery}`,  // why defined as a string?
         {
           method: "GET",
           headers: {

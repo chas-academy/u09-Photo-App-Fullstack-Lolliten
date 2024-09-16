@@ -24,7 +24,7 @@ app.use(express.static("uploads"));
 
 /* Enable CORS for all routes below */
 app.use(cors({
-  origin: "http://localhost:5173",
+  //origin: "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "PATCH"],
   credentials: true,
 }));
@@ -54,6 +54,7 @@ app.post("/api/upload", upload.single("image"), async (req, res) => {
   }
 });
 
+// get id or userId ???
 app.get("/img/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -66,9 +67,28 @@ app.get("/img/:id", async (req, res) => {
     res.send({ Error: "Unable to get image" });
   }
 });
-//move to auth, protected routes
 
+//move to auth, protected routes ??
 app.post("/post", verifyToken, upload.single("picture"), createPost); //createPost is a middleware
+
+/* Get User */
+app.get('/user/:userId', async (req, res) => { // getUser from controllers here too?
+  const userId = req.params.userId; //userId here or not ??
+  console.log('Received user ID:', userId); // test
+
+  try {
+    // Fetch user from database
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json(userResponse);
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 /* Routes */
 app.use("/auth", authRoutes);
