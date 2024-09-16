@@ -1,43 +1,54 @@
 import { json } from "express";
 import User from "../models/User.js";
+import mongoose from "mongoose";
 
 /* Read */
 export const getUser = async (req, res) => {
   try {
-    const { id } = req.params; // To grab id from choosen string
-    console.log("Fetching user with id:", id);
-    const user = await User.findById(id); //To grab user from id
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    const { id } = req.params;
+    console.log("Received user ID:", id); // debugging
+    const user = await User.findById(id);
     res.status(200).json(user);
+
+    if (!id || id === ':userId') {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(id)) { 
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
   } catch (err) {
     console.error("Error in getUser:", err);
-    res.status(500).json({ message: "Server error", error: err.message });
+    res.status(500).json({ error: err.message });
   }
 };
 
+//const user = await User.findById(userId).populate('friends', '_id firstName lastName picturePath');
+
 export const getUserFriends = async (req, res) => {
   try {
-    const { id } = req.params; // To grab id from choosen string
-    console.log("Fetching friends for user id:", id);
-    const user = await User.findById(id); //To grab user from id
+    const { userId } = req.params;
+    console.log("Received user ID:", userId);
 
-    const friends = await Promise.all(
-      //Multiple calls to the api
-      user.friends.map((id) => User.findById(id)) //To find all friends connected to id
-    );
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      console.log(`No user found with ID: ${userId}`);
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    const formattedFriends = friends.map(
-      ({ _id, firstName, lastName, picturePath }) => {
-        //formatting for fronten
-        return { _id, firstName, lastName, picturePath };
-      }
-    );
-    res.status(200), json(formattedFriends);
-  } catch (err) {
-    console.error("Error in getUserFriends:", err);
-    res.status(500).json({ message: "Server error", error: err.message });
+    if (!user.friends || !Array.isArray(user.friends)) {
+      console.log(`User ${userId} has no friends array`);
+      return res.status(200).json([]);
+    }
+
+    const friends = await User.find({ _id: { $in: user.friends } })
+      .select('_id firstName lastName picturePath');
+
+    res.status(200).json(friends);
+  } catch (error) {
+    console.error("Error in getUserFriends:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 

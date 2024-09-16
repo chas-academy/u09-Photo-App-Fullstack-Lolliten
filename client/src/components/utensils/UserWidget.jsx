@@ -1,15 +1,15 @@
 import {
   ManageAccountsOutlined,
-  EditOutlined,
-  LocationOnOutlined,
-  WorkOutlineOutlined,
+  EditOutlined,         //ta bort ?
+  LocationOnOutlined,  //ta bort ?
+  WorkOutlineOutlined, //ta bort ?
 } from "@mui/icons-material";
 import { Box, Typography, Divider, useTheme } from "@mui/material";
 import UserImage from "../utensils/Userimage";
 import FlexBetween from "../utensils/FlexBetween";
 import WidgetWrapper from "../utensils/WidgetWrapper";
-import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useSelector } from "react-redux"; //ta bort ?
+import { useEffect, useState } from "react"; //ta bort ?
 import { useNavigate } from "react-router-dom";
 
 const UserWidget = ({ userId, picturePath }) => {
@@ -19,39 +19,30 @@ const UserWidget = ({ userId, picturePath }) => {
   const token = useSelector((state) => state.token);
   const dark = palette.neutral.dark;
   const medium = palette.neutral.medium;
-  const main = palette.neutral.main;
+  const main = palette.neutral.main; // ta bort ?
 
-  const getUser = async () => {
-    try {
-      const response = await fetch(`http://localhost:3000/users/${userId}`, {
-        method: "GET",
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setUser(data);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-    }
-  };
+const getUser = async () => {
+  const response = await fetch(`http://localhost:3000/users/${userId}`, {
+    method: "GET",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const data = await response.json();
+  setUser(data);
+}
 
-  useEffect(() => {
-    getUser();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+useEffect(() => {
+  getUser(); // add any dependencies below ?
+}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!user) {
     return null;
   }
 
-  const {
+  const { 
     firstName,
     lastName,
-    friends = [],
+    viewedProfile,
+    friends,
   } = user;
 
   return (

@@ -7,6 +7,12 @@ const initialState = {
     }, //start with null
     token: null, //auth info
     posts: [],
+    search: {
+        query: "",
+        results: [],
+        isLoading: false,
+        error: null
+    },
 };
 
 export const authSlice = createSlice({
@@ -40,9 +46,27 @@ export const authSlice = createSlice({
                 return post;
             });
             state.posts = updatedPosts;
-        }
+        },
+        // Updates the search query
+        setSearchQuery: (state, action) => {
+            state.search.query = action.payload;
+        },
+        //Updates the search results and resets loading/error states
+        setSearchResults: (state, action) => {
+            state.search.results = action.payload;
+            state.search.isLoading = false;
+            state.search.error = null;
+        },
+        //Sets the loading state to true when a search begins
+        setSearchLoading: (state) => {
+            state.search.isLoading = true;
+        },
+        setSearchError: (state, action) => {
+            state.search.error = action.payload;
+            state.search.isLoading = false;
+        },
     }
 })
 
-export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost } = authSlice.actions;
+export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost, setSearchQuery, setSearchResults, setSearchLoading, setSearchError } = authSlice.actions;
 export default authSlice.reducer;

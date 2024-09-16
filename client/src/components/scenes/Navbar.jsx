@@ -20,11 +20,16 @@ import {
   Menu,
   Close,
 } from "@mui/icons-material";
+import {
+  setSearchQuery, // Fix this state
+  setSearchLoading,
+  setSearchResults,
+  setSearchError,
+} from "../../state/reduxConfig.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "../../state/reduxConfig.jsx";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "../utensils/FlexBetween.jsx";
-import { setLogin } from "../../state/reduxConfig.jsx"; //needed?
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
@@ -32,6 +37,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const theme = useTheme();
   const neutralLight = theme.palette.neutral.light;
@@ -39,6 +45,43 @@ const Navbar = () => {
   const background = theme.palette.background.default;
   const primaryLight = theme.palette.primary.light;
   const alt = theme.palette.background.alt;
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+    console.log(event.target.value);
+  };
+
+  const handleSearchClick = async () => {
+    console.log("Serachquery a string?", searchQuery); // test
+    try {
+      dispatch(setSearchQuery(searchQuery));
+      dispatch(setSearchLoading(true));
+
+      const response = await fetch(
+        `http://localhost:3000/search?q=${searchQuery}`,  // why defined as a string?
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Search failed");
+      }
+      const result = await response.json();
+
+      dispatch(setSearchResults(result));
+      dispatch(setSearchLoading(false));
+      navigate("/search-results");    //is this right ???
+    } catch (error) {
+      console.error("Search error:", error);
+      dispatch(setSearchError(error.message));
+      dispatch(setSearchLoading(false));
+    }
+    //navigate to search result
+    navigate("/search-results"); // display ?
+  };
 
   const goToProfile = () => {
     if (user) {
@@ -51,10 +94,10 @@ const Navbar = () => {
     navigate("/");
   };
 
-  let fullName = ""; //default
+  let fullName = "";
 
   if (user) {
-    fullName = `${user.firstName} ${user.lastName}`; //if user is logged in then name appear
+    fullName = `${user.firstName} ${user.lastName}`;
   }
 
   return (
@@ -81,8 +124,12 @@ const Navbar = () => {
             gap="3rem"
             padding="0.1rem 1.5rem"
           >
-            <InputBase placeholder="Search..." />
-            <IconButton>
+            <InputBase
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+            <IconButton onClick={handleSearchClick}>
               <Search />
             </IconButton>
           </FlexBetween>
@@ -198,9 +245,7 @@ const Navbar = () => {
                 <MenuItem value={fullName} onClick={goToProfile}>
                   <Typography>{fullName}</Typography>
                 </MenuItem>
-                <MenuItem onClick={handleLogout}>
-                  Log Out
-                </MenuItem>
+                <MenuItem onClick={handleLogout}>Log Out</MenuItem>
               </Select>
             </FormControl>
           </FlexBetween>
