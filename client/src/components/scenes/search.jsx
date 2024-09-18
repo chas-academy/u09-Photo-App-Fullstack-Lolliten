@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Box, Typography, CircularProgress } from '@mui/material';
 
-export const SearchResults = () => {
+const SearchResults = () => {
   const { searchResults, searchLoading, searchError } = useSelector((state) => state.search);
 
   if (searchLoading) {
@@ -31,4 +31,4 @@ export const SearchResults = () => {
   );
 };
 
-//export default SearchResults;
+export default SearchResults;

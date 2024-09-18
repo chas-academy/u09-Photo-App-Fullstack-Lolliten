@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "./theme.js";
-import { SearchResults } from "./components/scenes/search.jsx";
+import SearchResults from "./components/scenes/search.jsx";
 
 function App() {
     const mode = useSelector((state) => state.mode);
