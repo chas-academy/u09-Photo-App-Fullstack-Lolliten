@@ -51,6 +51,7 @@ const Form = () => {
   const isLogin = pageType === "login";
   const isRegister = pageType === "register";
 
+  /* Register */
   const register = async (values, onSubmitProps) => {
     // this allows to send form info with image
     const formData = new FormData();
@@ -75,8 +76,9 @@ const Form = () => {
     navigate("/");
   };
 
+  /* Login */
   const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch("http://localhost:3000/auth/login", {
+    const loggedInResponse = await fetch(`http://localhost:3000/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
@@ -91,7 +93,7 @@ const Form = () => {
     }
 
     if (loggedInResponse.status !== 200 && loggedInResponse.status !== 400) {
-      errorMessage("Please try again later");
+      console.log("Please try again later");
     }
 
     if (loggedIn && loggedInResponse.status === 200) {
