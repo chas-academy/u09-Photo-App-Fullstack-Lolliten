@@ -20,3 +20,6 @@ const connectDB = async () => {
 };
 
 export default connectDB;
+
+/* Put in .env?
+MONGO_URL="your_mongodb_connection_string"; */

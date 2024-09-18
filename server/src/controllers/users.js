@@ -1,12 +1,11 @@
-import { json } from "express";
 import User from "../models/User.js";
 import mongoose from "mongoose";
 
-/* Read */
+/* Read: Get user */
 export const getUser = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("Received user ID:", id); // debugging
+
     const user = await User.findById(id);
     res.status(200).json(user);
 
@@ -19,36 +18,34 @@ export const getUser = async (req, res) => {
     }
   } catch (err) {
     console.error("Error in getUser:", err);
-    res.status(500).json({ error: err.message });
+
+    res.status(404).json({ message: err.message });
   }
 };
 
-//const user = await User.findById(userId).populate('friends', '_id firstName lastName picturePath');
+/* Helper function */
+const formatFriends = (friends) => {
+  return friends.map(({ _id, firstName, lastName, picturePath }) => {
+    return { _id, firstName, lastName, picturePath };
+  });
+};
 
+/* Read: Get user's friends */
 export const getUserFriends = async (req, res) => {
   try {
-    const { userId } = req.params;
-    console.log("Received user ID:", userId);
+    const { id } = req.params; 
+    const user = await User.findById(id); 
 
-    const user = await User.findById(userId);
-    
     if (!user) {
-      console.log(`No user found with ID: ${userId}`);
+      console.log(`No user found with ID: ${id}`); //test
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (!user.friends || !Array.isArray(user.friends)) {
-      console.log(`User ${userId} has no friends array`);
-      return res.status(200).json([]);
-    }
+    const formattedFriends = formatFriends(friends);
+    res.status(200).json(formattedFriends);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
 
-    const friends = await User.find({ _id: { $in: user.friends } })
-      .select('_id firstName lastName picturePath');
-
-    res.status(200).json(friends);
-  } catch (error) {
-    console.error("Error in getUserFriends:", error);
-    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -72,11 +69,7 @@ export const addRemoveFriend = async (req, res) => {
     const friends = await Promise.all(
       user.friends.map((id) => User.findById(id))
     );
-    const formattedFriends = friends.map(
-      ({ _id, firstName, lastName, picturePath }) => {
-        return { _id, firstName, lastName, picturePath };
-      }
-    );
+    const formattedFriends = formatFriends(friends);
     res.status(200).json(formattedFriends);
   } catch (err) {
     res.status(404).json({ message: err.message });

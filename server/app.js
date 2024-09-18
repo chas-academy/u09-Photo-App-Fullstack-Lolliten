@@ -3,6 +3,7 @@ import multer from "multer";
 import cors from "cors";
 import path from "path";
 import dotenv from "dotenv";
+import bodyParser from "body-parser";
 import authRoutes from "./src/routes/auth.js";
 import userRoutes from "./src/routes/users.js";
 import postsRoutes from "./src/routes/posts.js";
@@ -22,12 +23,17 @@ const app = express();
 app.use(express.json());
 app.use(express.static("uploads"));
 
+app.use(bodyParser.json({ limit: "30mb", extended: true }));
+app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
+
 /* Enable CORS for all routes below */
-app.use(cors({
-  //origin: "http://localhost:5173",
-  methods: ["GET", "POST", "PUT", "PATCH"],
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "PATCH"],
+    credentials: true,
+  })
+);
 
 /* Multer config */ //Is multer needed here?
 const storage = multer.diskStorage({
@@ -54,7 +60,7 @@ app.post("/api/upload", upload.single("image"), async (req, res) => {
   }
 });
 
-// get id or userId ???
+/* This why profile pic dont appear ??? */
 app.get("/img/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -95,17 +101,75 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", postsRoutes);
 
-app.use("/search", searchRoutes)
+/* Pending friend routes */
+app.post("/users/:id/friend-request", verifyToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body;
 
-const port = process.env.PORT || 3000;
+    const user = await User.findById(id);
+    const sender = await User.findById(userId);
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+    if (!user.friendRequests.includes(userId)) {
+      user.friendRequests.push(userId);
+      await user.save();
+    }
+
+    res.status(200).json(user.friendRequests);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
 });
 
-/* ADD DATA ONE TIME FROM DATA: TESTDATA*/
-    // User.insertMany(users);
-    // Post.insertMany(posts);
+app.patch("/users/:id/accept-friend", verifyToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { friendId } = req.body;
+
+    const user = await User.findById(id);
+    const friend = await User.findById(friendId);
+
+    user.friends.push(friendId);
+    friend.friends.push(id);
+    user.friendRequests = user.friendRequests.filter(
+      (request) => request.toString() !== friendId
+    );
+
+    await user.save();
+    await friend.save();
+
+    res.status(200).json(user.friends);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+});
+app.patch("/users/:id/reject-friend", verifyToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { friendId } = req.body;
+
+    const user = await User.findById(id);
+
+    user.friendRequests = user.friendRequests.filter(
+      (request) => request.toString() !== friendId
+    );
+
+    await user.save();
+
+    res.status(200).json(user.friendRequests);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+  
+    app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+
+
+/* ADD DATA ONE TIME FROM DATA folder: TESTDATA*/
+// User.insertMany(users);
+// Post.insertMany(posts);
 /*
 
 ** Consider changing the import image method to import.meta.url. **

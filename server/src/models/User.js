@@ -37,7 +37,8 @@ const UserSchema = new mongoose.Schema(
             type: String,
             default: "",
         },
-}, {timestamps: true} //gives time and date info
+        friendRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+}, {timestamps: true}
 );
 
 const User = mongoose.model("User", UserSchema)

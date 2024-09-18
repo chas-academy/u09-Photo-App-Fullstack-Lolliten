@@ -33,6 +33,7 @@ import FlexBetween from "../utensils/FlexBetween.jsx";
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
@@ -94,7 +95,20 @@ const Navbar = () => {
     navigate("/");
   };
 
-  let fullName = "";
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    console.log(searchQuery)
+    if (searchQuery.trim()) {
+      navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const handleChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  let fullName = ""; //default
 
   if (user) {
     fullName = `${user.firstName} ${user.lastName}`;
@@ -124,12 +138,12 @@ const Navbar = () => {
             gap="3rem"
             padding="0.1rem 1.5rem"
           >
-            <InputBase
-              placeholder="Search..."
+            <InputBase 
+              placeholder="Search..." 
               value={searchQuery}
-              onChange={handleSearchChange}
+              onChange={handleChange}
             />
-            <IconButton onClick={handleSearchClick}>
+            <IconButton onClick={handleSearch}>
               <Search />
             </IconButton>
           </FlexBetween>
