@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Box, Typography, CircularProgress } from '@mui/material';
 
 const SearchResults = () => {
-  const { searchResults, searchLoading, searchError } = useSelector((state) => state.search);
+  const { searchLoading, searchError } = useSelector((state) => state.search);
 
   if (searchLoading) {
     return <CircularProgress />;
@@ -13,7 +13,6 @@ const SearchResults = () => {
     return <Typography color="error">{searchError}</Typography>;
   }
 
-  // Button to add friend frontend, in backend crud to add friend
   return (
     <Box>
       <Typography variant="h4">Search Results</Typography>
