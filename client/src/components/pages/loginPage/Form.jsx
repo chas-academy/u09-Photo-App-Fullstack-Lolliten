@@ -104,7 +104,7 @@ const Form = () => {
           token: loggedIn.token,
         })
       );
-      navigate("/welcome");
+      navigate("profile/:userId");
     }
   };
 

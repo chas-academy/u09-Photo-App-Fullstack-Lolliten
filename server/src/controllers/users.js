@@ -1,14 +1,24 @@
 import User from "../models/User.js";
+import mongoose from "mongoose";
 
 /* Read: Get user */
 export const getUser = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("Fetching user with id:", id); //test
+
     const user = await User.findById(id);
     res.status(200).json(user);
+
+    if (!id || id === ':userId') {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(id)) { 
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
   } catch (err) {
     console.error("Error in getUser:", err);
+
     res.status(404).json({ message: err.message });
   }
 };
@@ -26,15 +36,16 @@ export const getUserFriends = async (req, res) => {
     const { id } = req.params; 
     const user = await User.findById(id); 
 
-    const friends = await Promise.all(
-      //Multiple calls to the api
-      user.friends.map((id) => User.findById(id)) //To find all friends connected to id
-    );
+    if (!user) {
+      console.log(`No user found with ID: ${id}`); //test
+      return res.status(404).json({ message: "User not found" });
+    }
 
     const formattedFriends = formatFriends(friends);
     res.status(200).json(formattedFriends);
   } catch (err) {
-    res.status(404).json({ message: "Server error", error: err.message });
+    res.status(500).json({ message: "Server error", error: err.message });
+
   }
 };
 

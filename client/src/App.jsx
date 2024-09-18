@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import WelcomePage from "./components/pages/welcomePage/welcomePage";
 import LoginPage from "./components/pages/loginPage/loginPage";
 import ProfilePage from "./components/pages/profilePage/profilePage";
@@ -8,10 +8,14 @@ import { useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "./theme.js";
+import { SearchResults } from "./components/scenes/search.jsx";
 
 function App() {
     const mode = useSelector((state) => state.mode);
     const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+    //const isAuth = Boolean(useSelector((state) => state.token)); // see commented out in bottom
+
+    // search route rightly import ???
 
   return (
     <div className="app">
@@ -24,6 +28,7 @@ function App() {
           <Route path="/profile/:userId" element={<ProfilePage />} />
           <Route path="/search" element={<SearchResults />} />
         </Routes>
+
         </ThemeProvider>
       </BrowserRouter>
     </div>
@@ -31,3 +36,16 @@ function App() {
 }
 
 export default App;
+
+/*       //navigate in the routes instead ?? 
+            <Routes>
+            <Route path="/" element={<LoginPage />} />
+            <Route
+              path="/home"
+              element={isAuth ? <HomePage /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/profile/:userId"
+              element={isAuth ? <ProfilePage /> : <Navigate to="/" />}
+            />
+          </Routes> */

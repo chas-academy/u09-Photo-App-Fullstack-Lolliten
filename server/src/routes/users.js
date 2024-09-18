@@ -28,11 +28,7 @@ userRoutes.get("/search", verifyToken, async (req, res) => {
   });
 
 userRoutes.get("/:id", verifyToken, getUser);
-userRoutes.get("/:id/friends", verifyToken, (req, res, next) => {
-  // for testing:
-  console.log(`Received request for user friends. User ID: ${req.params.id}`);
-  getUserFriends(req, res, next);
-});
+userRoutes.get("/:id/friends", verifyToken, getUserFriends);
 
 /* Update (add or remove friends) */
 userRoutes.patch("/:id/:friendId", verifyToken, addRemoveFriend);

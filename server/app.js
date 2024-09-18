@@ -12,6 +12,7 @@ import Post from "./src/models/Post.js";
 import { verifyToken } from "./src/middleware/auth.js";
 import { createPost } from "./src/controllers/posts.js";
 import connectDB from "./src/db/db.js";
+import searchRoutes from "./src/routes/search.js";
 
 dotenv.config();
 
@@ -73,8 +74,27 @@ app.get("/img/:id", async (req, res) => {
   }
 });
 
-//move to auth, protected routes ???
+//move to auth, protected routes ??
 app.post("/post", verifyToken, upload.single("picture"), createPost); //createPost is a middleware
+
+/* Get User */
+app.get('/user/:userId', async (req, res) => { // getUser from controllers here too?
+  const userId = req.params.userId; //userId here or not ??
+  console.log('Received user ID:', userId); // test
+
+  try {
+    // Fetch user from database
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json(userResponse);
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 /* Routes */
 app.use("/auth", authRoutes);

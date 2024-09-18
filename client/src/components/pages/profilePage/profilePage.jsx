@@ -11,6 +11,8 @@ import FriendRequests from "../../scenes/FriendRequest";
 
 /* use navigate(/) to in this page to navigate to different part, ex when click comments, pictures, friends  */
 
+/* use navigate(/) to in this page to navigate to different part, ex when click comments, pictures, friends  */
+
 const ProfilePage = () => {
   const [user, setUser] = useState(null); 
     //{ _id: "",
@@ -25,17 +27,30 @@ const ProfilePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
   const getUser = async () => {
-    const response = await fetch(`http://localhost:3000/users/${userId}`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await response.json();
-    setUser(data);
+    console.log("Test userID", userId); //debugging
+    try {
+      const response = await fetch(`http://localhost:3000/users/${userId}`, {
+        method: "GET",
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          //'Content-Type': 'application/json',
+          //mode: 'cors',
+          //credentials: 'include'
+        }
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setUser(data);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+    }
   };
 
   useEffect(() => {
     getUser();
-  }, [userId]); // Added userId as a dependency
+  }, [userId]); // Added userId as a dependency ?
 
   if (!user) return null;
 

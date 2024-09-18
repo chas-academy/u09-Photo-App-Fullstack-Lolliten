@@ -7,6 +7,12 @@ const initialState = {
     }, //start with null
     token: null, //auth info
     posts: [],
+    search: {
+        query: "",
+        results: [],
+        isLoading: false,
+        error: null
+    },
 };
 
 export const authSlice = createSlice({
@@ -49,4 +55,5 @@ export const authSlice = createSlice({
 })
 
 export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost, setFriendRequests } = authSlice.actions;
+
 export default authSlice.reducer;
