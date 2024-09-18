@@ -2,13 +2,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import WelcomePage from "./components/pages/welcomePage/welcomePage";
 import LoginPage from "./components/pages/loginPage/loginPage";
 import ProfilePage from "./components/pages/profilePage/profilePage";
-import SearchResults from "./components/scenes/SearchResults"; // Add this import
+import SearchResults from "./components/scenes/SearchResults";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "./theme.js";
-import SearchResults from "./components/scenes/search.jsx";
 
 function App() {
     const mode = useSelector((state) => state.mode);

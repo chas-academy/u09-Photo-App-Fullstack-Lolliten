@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Box, Typography, CircularProgress } from '@mui/material';
 
 const SearchResults = () => {
-  const { searchLoading, searchError } = useSelector((state) => state.search);
+  const { searchLoading, searchError } = useSelector((state) => state.search); //took away searchResult
 
   if (searchLoading) {
     return <CircularProgress />;
