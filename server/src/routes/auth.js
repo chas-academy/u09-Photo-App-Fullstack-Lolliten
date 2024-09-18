@@ -1,6 +1,5 @@
 import express from "express";
-import { login } from "../controllers/auth.js";
-import { register } from "../controllers/auth.js";
+import { login, register } from "../controllers/auth.js";
 import multer from "multer";
 
 /* Multer config */ //Is multer needed here?
@@ -20,7 +19,7 @@ const authRoutes = express.Router();
 
 authRoutes.post("/login", login);
 
-authRoutes.post("/profile/:id"); // move ?
+authRoutes.post("/profile/:id");
 
 authRoutes.post("/register", upload.single("picture"), register); // Move ?? Middleware before uploading picture
 

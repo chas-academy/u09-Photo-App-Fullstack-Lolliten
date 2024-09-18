@@ -24,10 +24,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "../../state/reduxConfig.jsx";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "../utensils/FlexBetween.jsx";
-import { setLogin } from "../../state/reduxConfig.jsx"; //needed?
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
@@ -49,6 +49,18 @@ const Navbar = () => {
   const handleLogout = () => {
     dispatch(setLogout());
     navigate("/");
+  };
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    console.log(searchQuery)
+    if (searchQuery.trim()) {
+      navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const handleChange = (event) => {
+    setSearchQuery(event.target.value);
   };
 
   let fullName = ""; //default
@@ -81,8 +93,12 @@ const Navbar = () => {
             gap="3rem"
             padding="0.1rem 1.5rem"
           >
-            <InputBase placeholder="Search..." />
-            <IconButton>
+            <InputBase 
+              placeholder="Search..." 
+              value={searchQuery}
+              onChange={handleChange}
+            />
+            <IconButton onClick={handleSearch}>
               <Search />
             </IconButton>
           </FlexBetween>

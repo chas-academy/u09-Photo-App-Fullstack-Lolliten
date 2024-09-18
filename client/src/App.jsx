@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import WelcomePage from "./components/pages/welcomePage/welcomePage";
 import LoginPage from "./components/pages/loginPage/loginPage";
 import ProfilePage from "./components/pages/profilePage/profilePage";
+import SearchResults from "./components/scenes/SearchResults"; // Add this import
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
@@ -21,6 +22,7 @@ function App() {
           <Route path="/" element={<LoginPage />} />
           <Route path="/welcome" element={<WelcomePage />} />
           <Route path="/profile/:userId" element={<ProfilePage />} />
+          <Route path="/search" element={<SearchResults />} />
         </Routes>
         </ThemeProvider>
       </BrowserRouter>

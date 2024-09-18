@@ -1,7 +1,6 @@
-//import { json } from "express"; //needed ?
 import User from "../models/User.js";
 
-/* Read */
+/* Read: Get user */
 export const getUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -14,6 +13,14 @@ export const getUser = async (req, res) => {
   }
 };
 
+/* Helper function */
+const formatFriends = (friends) => {
+  return friends.map(({ _id, firstName, lastName, picturePath }) => {
+    return { _id, firstName, lastName, picturePath };
+  });
+};
+
+/* Read: Get user's friends */
 export const getUserFriends = async (req, res) => {
   try {
     const { id } = req.params; 
@@ -24,13 +31,8 @@ export const getUserFriends = async (req, res) => {
       user.friends.map((id) => User.findById(id)) //To find all friends connected to id
     );
 
-    const formattedFriends = friends.map(
-      ({ _id, firstName, lastName, picturePath }) => {
-        //formatting for fronten
-        return { _id, firstName, lastName, picturePath };
-      }
-    );
-    res.status(200).json(formattedFriends); // Fixed: Changed status(200), json to status(200).json
+    const formattedFriends = formatFriends(friends);
+    res.status(200).json(formattedFriends);
   } catch (err) {
     res.status(404).json({ message: "Server error", error: err.message });
   }
@@ -56,11 +58,7 @@ export const addRemoveFriend = async (req, res) => {
     const friends = await Promise.all(
       user.friends.map((id) => User.findById(id))
     );
-    const formattedFriends = friends.map(
-      ({ _id, firstName, lastName, picturePath }) => {
-        return { _id, firstName, lastName, picturePath };
-      }
-    );
+    const formattedFriends = formatFriends(friends);
     res.status(200).json(formattedFriends);
   } catch (err) {
     res.status(404).json({ message: err.message });

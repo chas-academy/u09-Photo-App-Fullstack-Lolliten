@@ -40,9 +40,13 @@ export const authSlice = createSlice({
                 return post;
             });
             state.posts = updatedPosts;
-        }
+        },
+        setFriendRequests: (friendRequests) => ({
+            type: "SET_FRIEND_REQUESTS",
+            payload: friendRequests,
+        }),
     }
 })
 
-export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost } = authSlice.actions;
+export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost, setFriendRequests } = authSlice.actions;
 export default authSlice.reducer;
