@@ -91,7 +91,7 @@ const Navbar = () => {
       dispatch(setSearchLoading(false));
     }
     /* Navigate to search result of users */
-    navigate(`${setSearchResults}`);
+    navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
   };
 
   const goToProfile = () => {
