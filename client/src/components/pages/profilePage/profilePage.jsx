@@ -40,7 +40,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     getUser();
-  }, [userId]); // token a s a dependency good ???
+  }, [userId]); // token a s a dependency too ???
 
   if (!user) return null;
 
