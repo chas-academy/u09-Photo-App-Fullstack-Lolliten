@@ -4,59 +4,47 @@ import User from "../models/User.js";
 
 /* REGISTER USER */
 export const register = async (req, res) => {
-    try{
-      const {
-        firstName,
-        lastName,
-        email,
-        password,
-        friends,
-    } = req.body;
+  try {
+    const { firstName, lastName, email, password, friends } = req.body;
 
-        const picturePath = req.file ? req.file.filename : null;
+    const picturePath = req.file ? req.file.filename : null;
 
-        const salt = await bcrypt.genSalt();
-        const passwordHash = await bcrypt.hash(password, salt);
+    const salt = await bcrypt.genSalt();
+    const passwordHash = await bcrypt.hash(password, salt);
 
-        const newUser = new User({
-            firstName,
-            lastName,
-            email,
-            password: passwordHash,
-            picturePath,
-            friends,
-        });
-        const savedUser = await newUser.save();
-        res.status(201).json(savedUser);
-    } catch (err) {
-        console.error("Registration error:", err); // Add this line for debugging
-        res.status(500).json({ error: err.message });
-    }
-}
+    const newUser = new User({
+      firstName,
+      lastName,
+      email,
+      password: passwordHash,
+      picturePath,
+      friends,
+    });
+    const savedUser = await newUser.save();
+    res.status(201).json(savedUser);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 /* LOG IN */
 export const login = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        
-        const user = await User.findOne({ email: email });
-        if (!user || user === undefined) return res.status(400).json({ msg: "User dont exist. " });
-        console.log("User", user); //test
-        console.log("Incoming password", password); //test
-        console.log("User password", user.password); //test
+  try {
+    const { email, password } = req.body;
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
-        console.log("Is it match?", isMatch); // test
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-        console.log("Token?", token); //test
-        delete user.password;
-        res.status(200).json({ token, user });
-    } catch (err) {
-        res.status(500).json({ error: err.message});
-    }
-}
+    const user = await User.findOne({ email: email });
+    if (!user || user === undefined)
+      return res.status(400).json({ msg: "User dont exist. " });
 
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    delete user.password;
+    res.status(200).json({ token, user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 /* try {
         const { email, password } = req.body;

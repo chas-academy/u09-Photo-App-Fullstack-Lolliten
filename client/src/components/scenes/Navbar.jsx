@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Box,
   IconButton,
@@ -21,13 +20,14 @@ import {
   Close,
 } from "@mui/icons-material";
 import {
-  setSearchQuery, // Fix this state
+  setSearchQuery, // Fix this state ???
   setSearchLoading,
   setSearchResults,
   setSearchError,
 } from "../../state/reduxConfig.jsx";
-import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "../../state/reduxConfig.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "../utensils/FlexBetween.jsx";
 
@@ -38,7 +38,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
-  const [searchQuery, setSearchQuery] = useState("");
 
   const theme = useTheme();
   const neutralLight = theme.palette.neutral.light;
@@ -47,19 +46,31 @@ const Navbar = () => {
   const primaryLight = theme.palette.primary.light;
   const alt = theme.palette.background.alt;
 
-  const handleSearchChange = (event) => {
+  /*const handleSearch = async (e) => {
+    e.preventDefault();
+    console.log(searchQuery)
+    if (searchQuery.trim()) {
+      navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+    }
+  }
+
+  const handleChange = (event) => {
+    setSearchQuery(event.target.value);
+  };*/
+
+  const handleChange = (event) => {
     setSearchQuery(event.target.value);
     console.log(event.target.value);
   };
 
-  const handleSearchClick = async () => {
+  const handleSearch = async () => {
     console.log("Serachquery a string?", searchQuery); // test
     try {
       dispatch(setSearchQuery(searchQuery));
       dispatch(setSearchLoading(true));
 
       const response = await fetch(
-        `http://localhost:3000/search?q=${searchQuery}`,  // why defined as a string?
+        `http://localhost:3000/search?q=${searchQuery}`, // why defined as a string?
         {
           method: "GET",
           headers: {
@@ -74,14 +85,13 @@ const Navbar = () => {
 
       dispatch(setSearchResults(result));
       dispatch(setSearchLoading(false));
-      navigate("/search-results");    //is this right ???
     } catch (error) {
       console.error("Search error:", error);
       dispatch(setSearchError(error.message));
       dispatch(setSearchLoading(false));
     }
-    //navigate to search result
-    navigate("/search-results"); // display ?
+    /* Navigate to search result of users */
+    navigate(`${setSearchResults}`);
   };
 
   const goToProfile = () => {
@@ -93,19 +103,6 @@ const Navbar = () => {
   const handleLogout = () => {
     dispatch(setLogout());
     navigate("/");
-  };
-
-
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    console.log(searchQuery)
-    if (searchQuery.trim()) {
-      navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
-    }
-  };
-
-  const handleChange = (event) => {
-    setSearchQuery(event.target.value);
   };
 
   let fullName = ""; //default
@@ -138,8 +135,8 @@ const Navbar = () => {
             gap="3rem"
             padding="0.1rem 1.5rem"
           >
-            <InputBase 
-              placeholder="Search..." 
+            <InputBase
+              placeholder="Search..."
               value={searchQuery}
               onChange={handleChange}
             />

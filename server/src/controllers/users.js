@@ -33,19 +33,27 @@ const formatFriends = (friends) => {
 /* Read: Get user's friends */
 export const getUserFriends = async (req, res) => {
   try {
-    const { id } = req.params; 
-    const user = await User.findById(id); 
+    const { id } = req.params;
+    console.log("Fetching friends for userId:", id);
+
+    const user = await User.findById(id);
 
     if (!user) {
       console.log(`No user found with ID: ${id}`); //test
       return res.status(404).json({ message: "User not found" });
     }
 
+    console.log("User found:", user);
+    console.log("User friends:", user.friends);
+
+    const friends = await User.find({ _id: { $in: user.friends } });
+    console.log("Friends fetched:", friends);
+
     const formattedFriends = formatFriends(friends);
     res.status(200).json(formattedFriends);
   } catch (err) {
+    console.error("Error in getUserFriends:", err);
     res.status(500).json({ message: "Server error", error: err.message });
-
   }
 };
 

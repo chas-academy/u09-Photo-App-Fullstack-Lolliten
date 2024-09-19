@@ -11,31 +11,21 @@ import FriendRequests from "../../scenes/FriendRequest";
 
 /* use navigate(/) to in this page to navigate to different part, ex when click comments, pictures, friends  */
 
-/* use navigate(/) to in this page to navigate to different part, ex when click comments, pictures, friends  */
-
 const ProfilePage = () => {
-  const [user, setUser] = useState(null); 
-    //{ _id: "",
-    // username: '',
-    // email: '',
-    // picturePath: '',
-    // // friends: [], }
-  //was null first, but it was uncontrollable wheras I need a controlled in the component..
+  const [user, setUser] = useState(null); //if uncontrolled change value from null
   const { userId } = useParams();
+  console.log("userId from params:", userId); //test
   const token = useSelector((state) => state.token);
   const loggedInUserId = useSelector((state) => state.user._id);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
   const getUser = async () => {
-    console.log("Test userID", userId); //debugging
+      console.log("Test userID", userId); //test
     try {
-      const response = await fetch(`http://localhost:3000/users/${userId}`, {
+      const response = await fetch(`http://localhost:3000/user/${userId}`, {
         method: "GET",
         headers: { 
           Authorization: `Bearer ${token}`,
-          //'Content-Type': 'application/json',
-          //mode: 'cors',
-          //credentials: 'include'
         }
       });
       if (!response.ok) {
@@ -50,7 +40,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     getUser();
-  }, [userId]); // Added userId as a dependency ?
+  }, [userId]); // token a s a dependency good ???
 
   if (!user) return null;
 

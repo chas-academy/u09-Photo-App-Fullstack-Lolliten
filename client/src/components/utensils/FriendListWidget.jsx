@@ -27,6 +27,7 @@ const FriendListWidget = ({ userId, isProfile, loggedInUserId }) => {
       console.error("Error fetching friends:", error);
     }
   };
+  
   const isOwnProfile = loggedInUserId === userId;
 
   //adds and remove
@@ -47,9 +48,9 @@ const FriendListWidget = ({ userId, isProfile, loggedInUserId }) => {
 
   useEffect(() => {
     getFriends();
-  }, [userId]); // Added userId as a dependency //userId, token, getFriends
+  }, [userId]); // userId as a dependency ??? //userId, token, getFriends
 
-  const isFriend = Array.isArray(friends) && friends.some((friend) => friend._id === loggedInUserId); // is this right with the some. ?
+  //const isFriend = Array.isArray(friends) && friends.some((friend) => friend._id === loggedInUserId);
 
   return (
     <WidgetWrapper>
@@ -72,13 +73,11 @@ const FriendListWidget = ({ userId, isProfile, loggedInUserId }) => {
             "&:hover": { color: palette.primary.main },
           }}
         >
-          {friends.some((friend) => friend._id === loggedInUserId)
-            ? "Remove Friend"
-            : "Add Friend"}
+          {friends.some(friend => friend._id === loggedInUserId) ? "Remove Friend" : "Add Friend"}
         </Button>
       )}
       <Box display="flex" flexDirection="column" gap="1.5rem">
-        {Array.isArray(friends) && friends.length > 0 ? (
+        {friends.length > 0 ? (
           friends.map((friend) => (
             <Friend
               key={friend._id}

@@ -104,7 +104,7 @@ const Form = () => {
           token: loggedIn.token,
         })
       );
-      navigate("profile/:userId");
+      navigate(`profile/${loggedIn.user._id}`);
     }
   };
 
