@@ -26,6 +26,7 @@ function App() {
           <Route path="/welcome" element={<WelcomePage />} />
           <Route path="/profile/:userId" element={<ProfilePage />} />
           <Route path="/search" element={<SearchResults />} />
+          //<Route path="/profile/:userId" element={<ProfilePage />} />
         </Routes>
 
         </ThemeProvider>

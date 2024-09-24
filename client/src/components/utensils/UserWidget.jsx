@@ -37,7 +37,7 @@ useEffect(() => {
   if (!user) {
     return null;
   }
-
+console.log(user); //test
   const { 
     firstName,
     lastName,

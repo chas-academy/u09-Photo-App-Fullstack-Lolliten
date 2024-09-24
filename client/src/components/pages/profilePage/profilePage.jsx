@@ -13,10 +13,11 @@ import FriendRequests from "../../scenes/FriendRequest";
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null); //if uncontrolled change value from null
+  const [pendingRequests, setPendingRequests] = useState([]);
   const { userId } = useParams();
   console.log("userId from params:", userId); //test
   const token = useSelector((state) => state.token);
-  const loggedInUserId = useSelector((state) => state.user._id);
+  const loggedInUserId = useSelector((state) => state.user._id); //Error in browser undefined
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
   const getUser = async () => {
@@ -38,9 +39,28 @@ const ProfilePage = () => {
     }
   };
 
+  const getPendingRequests = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/users/${loggedInUserId}/pending-requests`, { // Wrong 
+        method: "GET",
+        headers: { 
+          Authorization: `Bearer ${token}`,
+        }
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setPendingRequests(data);
+    } catch (error) {
+      console.error("Error fetching pending requests:", error);
+    }
+  };
+
   useEffect(() => {
     getUser();
-  }, [userId]); // token a s a dependency too ???
+    getPendingRequests();
+  }, [userId]); // loggedInUserId and token a s a dependency too ???
 
   if (!user) return null;
 
@@ -57,9 +77,14 @@ const ProfilePage = () => {
         justifyContent="center"
       >
         <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
-        <UserWidget userId={userId} picturePath={user.picturePath} />
+          <UserWidget userId={userId} picturePath={user.picturePath} />
           <Box m="2rem 0" />
-          <FriendListWidget userId={userId} isProfile={true} loggedInUserId={loggedInUserId} />
+          <FriendListWidget 
+            userId={userId} 
+            isProfile={true} 
+            loggedInUserId={loggedInUserId} 
+            pendingRequests={pendingRequests}
+          />
           {isOwnProfile && (
             <Box mt="2rem">
               <FriendRequests />
@@ -70,7 +95,7 @@ const ProfilePage = () => {
           flexBasis={isNonMobileScreens ? "42%" : undefined}
           mt={isNonMobileScreens ? undefined : "2rem"}
         >
-          <MyPostWidget picturePath={user.picturePath} />
+          {isOwnProfile && <MyPostWidget picturePath={user.picturePath} />}
           <Box m="2rem 0" />
           <PostWidget userId={userId} isProfile />
         </Box>

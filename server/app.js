@@ -101,6 +101,11 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", postsRoutes);
 
+/* New friend request  */
+//Is this etup right ???
+// create sendFriendRequestController+
+//.post('/users/:userId/send-friend-request', authMiddleware, sendFriendRequestController);
+
 /* Pending friend routes */
 app.post("/users/:id/friend-request", verifyToken, async (req, res) => {
   try {
