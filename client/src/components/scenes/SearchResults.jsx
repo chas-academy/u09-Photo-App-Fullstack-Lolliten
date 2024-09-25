@@ -2,17 +2,17 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Box, Typography, List, ListItem, ListItemText, ListItemAvatar, Avatar, Button } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
-import { setFriends, setFriendRequests } from "../../state/reduxConfig";
+//import { setFriends, setFriendRequests } from "../../state/reduxConfig";
 import Navbar from "./Navbar";
 
 const SearchResults = () => {
   const [searchResults, setSearchResults] = useState([]);
   const token = useSelector((state) => state.token);
   const loggedInUserId = useSelector((state) => state.user._id);
-  const friends = useSelector((state) => state.user.friends);
+  //const friends = useSelector((state) => state.user.friends);
   const location = useLocation();
   const searchQuery = new URLSearchParams(location.search).get("query");
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
   
 
   useEffect(() => {
@@ -33,7 +33,9 @@ const SearchResults = () => {
     }
   }, [searchQuery, token]);
 
-  const addRemoveFriend = async (friendId) => {
+  /* Possibility to remove friendrequest instead here ??? */
+
+  /*const addRemoveFriend = async (friendId) => {
     const response = await fetch(
       `http://localhost:3000/users/${loggedInUserId}/${friendId}`,
       {
@@ -46,7 +48,7 @@ const SearchResults = () => {
     );
     const data = await response.json();
     dispatch(setFriends({ friends: data }));
-  };
+  };*/
 
   const sendFriendRequest = async (friendId) => {
     const response = await fetch(

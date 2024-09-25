@@ -1,4 +1,4 @@
-import { PersonAddOutlined, PersonRemoveOutlined } from "@mui/icons-material";
+/* import { PersonAddOutlined, PersonRemoveOutlined } from "@mui/icons-material";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -34,9 +34,9 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
     );
     const data = await response.json();
     dispatch(setFriends({ friends: data }));
-  };
+  }; */
 /* passing 0 to the navigate, it forces a full page reload. */
-  return (
+ /*{ return (
     <FlexBetween>
       <FlexBetween gap="1rem">
         <UserImage image={userPicturePath} size="55px" />
@@ -75,6 +75,6 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
       </IconButton>
     </FlexBetween>
   );
-};
+}; }*/
 
-export default Friend;
+//export default Friend;
