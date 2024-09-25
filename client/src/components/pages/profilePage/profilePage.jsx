@@ -7,9 +7,8 @@ import FriendListWidget from "../../utensils/FriendListWidget";
 import MyPostWidget from "../../utensils/MyPostWidget";
 import UserWidget from "../../utensils/UserWidget";
 import PostWidget from "../../utensils/PostWidget";
-import FriendRequests from "../../scenes/FriendRequest";
+//import FriendRequests from "../../scenes/FriendRequest";
 
-/* use navigate(/) to in this page to navigate to different part, ex when click comments, pictures, friends  */
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null); //if uncontrolled change value from null
@@ -17,17 +16,21 @@ const ProfilePage = () => {
   const { userId } = useParams();
   console.log("userId from params:", userId); //test
   const token = useSelector((state) => state.token);
-  const loggedInUserId = useSelector((state) => state.user._id); //Error in browser undefined
-  const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
+  const loggedInUser = useSelector((state) => state.user); //Error in browser undefined
+console.log("loggedInUser", loggedInUser._id)
 
+  const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
+  const isOwnProfile = userId === loggedInUser._id;
+
+  /* Gets User */
   const getUser = async () => {
-      console.log("Test userID", userId); //test
+    console.log("Test userID", userId); //test
     try {
       const response = await fetch(`http://localhost:3000/user/${userId}`, {
         method: "GET",
-        headers: { 
+        headers: {
           Authorization: `Bearer ${token}`,
-        }
+        },
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -39,14 +42,18 @@ const ProfilePage = () => {
     }
   };
 
+  /* Gets pending friend reequests */
   const getPendingRequests = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/users/${loggedInUserId}/pending-requests`, { // Wrong 
-        method: "GET",
-        headers: { 
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `http://localhost:3000/users/${loggedInUser._id}/pendingRequests`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -57,14 +64,21 @@ const ProfilePage = () => {
     }
   };
 
+  /*  This instead ???
+useEffect(() => {
+    getUser();
+    if (loggedInUserId && token) {
+        getPendingRequests();
+    }
+}, [loggedInUserId, token]); */
+
   useEffect(() => {
+    //useEffect after or before functions ???
     getUser();
     getPendingRequests();
-  }, [userId]); // loggedInUserId and token a s a dependency too ???
+  }, []); // loggedInUserId and token a s a dependency too ???
 
-  if (!user) return null;
-
-  const isOwnProfile = userId === loggedInUserId;
+  if (!user || userId === undefined) return null;
 
   return (
     <Box>
@@ -79,15 +93,15 @@ const ProfilePage = () => {
         <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
           <UserWidget userId={userId} picturePath={user.picturePath} />
           <Box m="2rem 0" />
-          <FriendListWidget 
-            userId={userId} 
-            isProfile={true} 
-            loggedInUserId={loggedInUserId} 
+          <FriendListWidget
+            userId={userId}
+            isProfile={true}
+            loggedInUserId={loggedInUser._id}
             pendingRequests={pendingRequests}
           />
           {isOwnProfile && (
             <Box mt="2rem">
-              <FriendRequests />
+              <FriendListWidget />
             </Box>
           )}
         </Box>

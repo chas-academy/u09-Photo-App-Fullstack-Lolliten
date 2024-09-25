@@ -10,25 +10,21 @@ import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "./theme.js";
 
 function App() {
-    const mode = useSelector((state) => state.mode);
-    const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
-    //const isAuth = Boolean(useSelector((state) => state.token)); // see commented out in bottom
+  const mode = useSelector((state) => state.mode);
+  const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
 
-    // search route rightly import ???
 
   return (
     <div className="app">
       <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/welcome" element={<WelcomePage />} />
-          <Route path="/profile/:userId" element={<ProfilePage />} />
-          <Route path="/search" element={<SearchResults />} />
-          //<Route path="/profile/:userId" element={<ProfilePage />} />
-        </Routes>
-
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Routes>
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/welcome" element={<WelcomePage />} />
+            <Route path="/search" element={<SearchResults />} />
+            <Route path="/profile/:userId" element={<ProfilePage />} />
+          </Routes>
         </ThemeProvider>
       </BrowserRouter>
     </div>
@@ -37,7 +33,16 @@ function App() {
 
 export default App;
 
-/*       //navigate in the routes instead ?? 
+  /* import pendingRequests from "./components/pages/profilePage";
+    <Route
+              path="/profile/:userId"
+              element={<ProfilePage pendingRequests={pendingRequests} />}
+            /> */
+
+/* 
+ //const isAuth = Boolean(useSelector((state) => state.token)); // see below
+
+//navigate in the routes instead ?? 
             <Routes>
             <Route path="/" element={<LoginPage />} />
             <Route

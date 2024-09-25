@@ -4,6 +4,7 @@ const initialState = {
   mode: "light", //config global
   user: {
     isLoggedIn: false,
+    friendRequests: [],
   }, //start with null
   token: null, //auth info
   posts: [],
@@ -30,12 +31,11 @@ export const authSlice = createSlice({
       state.user = null;
       state.token = null;
     },
-    setFriends: (state, action) => {
-      if (state.user) {
-        state.user.friends = action.payload.friends;
-      } else {
-        console.log("This user friend does not exist :(");
-      }
+    setFriends: (state, action) => { //add a null check in the component that dispatches this action.
+        state.user = { //spreads all existing properties 
+            ...state.user, //into the new object we're creating.
+            friends: action.payload.friends
+          };
     },
     setPosts: (state, action) => {
       state.posts = action.payload.posts;
@@ -48,10 +48,26 @@ export const authSlice = createSlice({
       });
       state.posts = updatedPosts;
     },
-    setFriendRequests: (friendRequests) => ({
-      type: "SET_FRIEND_REQUESTS",
-      payload: friendRequests,
-    }),
+    /* when array works. if first element in array is null then set state.user.friendRequest into []  */
+    setFriendRequests: (state, action) => {
+    if (Array.isArray(action.payload.friendRequests)) {
+        //state.user.friendRequests = action.payload.friendRequests;
+        console.log("set friend request: isArray")
+    } else {
+        console.log("set friend request: is not Array")
+        //const newFriendRequests = state.user.friendRequests
+        //newFriendRequests.push(action.payload.friendRequests)
+        //state.user.friendRequests = newFriendRequests;
+    }
+},
+    /*    
+   if (Array.isArray(action.payload.friendRequests)) {
+        state.user.friendRequests = action.payload.friendRequests;
+    } else {
+        const newFriendRequests = state.user.friendRequests
+        newFriendRequests.push(action.payload.friendRequests)
+        state.user.friendRequests = newFriendRequests;
+    } */
     // Updates the search query
     setSearchQuery: (state, action) => {
       state.search.query = action.payload;
