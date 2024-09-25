@@ -1,4 +1,4 @@
-import { PersonAddOutlined, PersonRemoveOutlined, Send } from "@mui/icons-material";
+/* import { PersonAddOutlined, PersonRemoveOutlined } from "@mui/icons-material";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -19,26 +19,9 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
   const main = palette.neutral.main;
   const medium = palette.neutral.medium;
 
-  const isFriend = friends.find((friend) => friend._id === friendId);
+  const isFriend = friends.find((friend) => friend._id === friendId); //here or in friendListWidget ???
 
-  const sendFriendRequest = async () => {
-    const response = await fetch(
-      `http://localhost:3000/users/${_id}/send-friend-request`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ friendId }),
-      }
-    );
-    const data = await response.json();
-    // Handle the response
-    console.log("Friend request sent:", data);
-  };
-
-  const removeFriend = async () => {
+  const patchFriend = async () => {
     const response = await fetch(
       `http://localhost:3000/users/${_id}/${friendId}`,
       {
@@ -51,10 +34,9 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
     );
     const data = await response.json();
     dispatch(setFriends({ friends: data }));
-  };
-  /* passing 0 to the navigate, it forces a full page reload.
-   navigate(0); */
-  return (
+  }; */
+/* passing 0 to the navigate, it forces a full page reload. */
+ /*{ return (
     <FlexBetween>
       <FlexBetween gap="1rem">
         <UserImage image={userPicturePath} size="55px" />
@@ -82,17 +64,17 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
         </Box>
       </FlexBetween>
       <IconButton
-        onClick={isFriend ? removeFriend : sendFriendRequest}
+        onClick={() => patchFriend()}
         sx={{ backgroundColor: primaryLight, p: "0.6rem" }}
       >
         {isFriend ? (
           <PersonRemoveOutlined sx={{ color: primaryDark }} />
         ) : (
-          <Send sx={{ color: primaryDark }} />
+          <PersonAddOutlined sx={{ color: primaryDark }} />
         )}
       </IconButton>
     </FlexBetween>
   );
-};
+}; }*/
 
-export default Friend;
+//export default Friend;

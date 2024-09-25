@@ -7,26 +7,30 @@ import FriendListWidget from "../../utensils/FriendListWidget";
 import MyPostWidget from "../../utensils/MyPostWidget";
 import UserWidget from "../../utensils/UserWidget";
 import PostWidget from "../../utensils/PostWidget";
-import FriendRequests from "../../scenes/FriendRequest";
+//import FriendRequests from "../../scenes/FriendRequest";
 
-/* use navigate(/) to in this page to navigate to different part, ex when click comments, pictures, friends  */
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null); //if uncontrolled change value from null
+  const [pendingRequests, setPendingRequests] = useState([]);
   const { userId } = useParams();
   console.log("userId from params:", userId); //test
   const token = useSelector((state) => state.token);
-  const loggedInUserId = useSelector((state) => state.user._id);
-  const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
+  const loggedInUser = useSelector((state) => state.user); //Error in browser undefined
+console.log("loggedInUser", loggedInUser._id)
 
+  const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
+  const isOwnProfile = userId === loggedInUser._id;
+
+  /* Gets User */
   const getUser = async () => {
-      console.log("Test userID", userId); //test
+    console.log("Test userID", userId); //test
     try {
       const response = await fetch(`http://localhost:3000/user/${userId}`, {
         method: "GET",
-        headers: { 
+        headers: {
           Authorization: `Bearer ${token}`,
-        }
+        },
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -38,13 +42,43 @@ const ProfilePage = () => {
     }
   };
 
-  useEffect(() => {
+  /* Gets pending friend reequests */
+  const getPendingRequests = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/users/${loggedInUser._id}/pendingRequests`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setPendingRequests(data);
+    } catch (error) {
+      console.error("Error fetching pending requests:", error);
+    }
+  };
+
+  /*  This instead ???
+useEffect(() => {
     getUser();
-  }, [userId]); // token a s a dependency too ???
+    if (loggedInUserId && token) {
+        getPendingRequests();
+    }
+}, [loggedInUserId, token]); */
 
-  if (!user) return null;
+  useEffect(() => {
+    //useEffect after or before functions ???
+    getUser();
+    getPendingRequests();
+  }, []); // loggedInUserId and token a s a dependency too ???
 
-  const isOwnProfile = userId === loggedInUserId;
+  if (!user || userId === undefined) return null;
 
   return (
     <Box>
@@ -57,12 +91,17 @@ const ProfilePage = () => {
         justifyContent="center"
       >
         <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
-        <UserWidget userId={userId} picturePath={user.picturePath} />
+          <UserWidget userId={userId} picturePath={user.picturePath} />
           <Box m="2rem 0" />
-          <FriendListWidget userId={userId} isProfile={true} loggedInUserId={loggedInUserId} />
+          <FriendListWidget
+            userId={userId}
+            isProfile={true}
+            loggedInUserId={loggedInUser._id}
+            pendingRequests={pendingRequests}
+          />
           {isOwnProfile && (
             <Box mt="2rem">
-              <FriendRequests />
+              <FriendListWidget />
             </Box>
           )}
         </Box>
@@ -70,7 +109,7 @@ const ProfilePage = () => {
           flexBasis={isNonMobileScreens ? "42%" : undefined}
           mt={isNonMobileScreens ? undefined : "2rem"}
         >
-          <MyPostWidget picturePath={user.picturePath} />
+          {isOwnProfile && <MyPostWidget picturePath={user.picturePath} />}
           <Box m="2rem 0" />
           <PostWidget userId={userId} isProfile />
         </Box>

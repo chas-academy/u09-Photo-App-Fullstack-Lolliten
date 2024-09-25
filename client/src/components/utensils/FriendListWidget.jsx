@@ -1,18 +1,27 @@
-import { Box, Typography, useTheme, Button } from "@mui/material";
-import Friend from "../pages/friend/Friend";
+import { Box, Typography, useTheme, Button, List, ListItem, ListItemText } from "@mui/material";
+//import Friend from "../pages/friend/Friend";
 import WidgetWrapper from "../utensils/WidgetWrapper";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setFriends } from "../../state/reduxConfig";
+import { setFriends, setFriendRequests } from "../../state/reduxConfig";
 
-const FriendListWidget = ({ userId, isProfile, loggedInUserId }) => {
+
+const FriendListWidget = ({ userId, isProfile, loggedInUserId, pendingRequests }) => {
   const dispatch = useDispatch();
   const { palette } = useTheme();
   const token = useSelector((state) => state.token);
-  const friends = useSelector((state) => state.user.friends) || [];
+  //const friends = useSelector((state) => state.user.friends) || [];
+  const friendRequests = useSelector((state) => state.user.friendRequests) || [];
 
+  const isOwnProfile = loggedInUserId === userId;
+  const isPending = Array.isArray(pendingRequests) && pendingRequests.includes(userId); //default value of an empty array
+
+/* Get friend list */ 
   const getFriends = async () => {
     try {
+      if (userId === undefined) {
+        return null;
+      }
       const response = await fetch(
         `http://localhost:3000/users/${userId}/friends`,
         {
@@ -27,30 +36,45 @@ const FriendListWidget = ({ userId, isProfile, loggedInUserId }) => {
       console.error("Error fetching friends:", error);
     }
   };
-  
-  const isOwnProfile = loggedInUserId === userId;
 
-  //adds and remove
-  const addRemoveFriend = async () => {
-    const response = await fetch(
-      `http://localhost:3000/users/${loggedInUserId}/${userId}`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+  /* Handle accept friend request */
+  const handleAccept = async (friendId) => {
+    const response = await fetch(`http://localhost:3000/users/addFriend`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ friendId, userId: loggedInUserId }),
+    });
     const data = await response.json();
     dispatch(setFriends({ friends: data }));
+    dispatch(setFriendRequests(friendRequests.filter(id => id !== friendId)));
+    console.log(friendRequests.filter(id => id !== friendId))
+  };
+
+  /* Handle reject friend request */
+  const handleReject = async (friendId) => {
+    const response = await fetch(`http://localhost:3000/users/removeFriend`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ friendId }),
+    });
+    const data = await response.json();
+    dispatch(setFriendRequests(data));
   };
 
   useEffect(() => {
     getFriends();
-  }, [userId]); // userId as a dependency ??? //userId, token, getFriends
+  }, [userId]);
 
-  //const isFriend = Array.isArray(friends) && friends.some((friend) => friend._id === loggedInUserId);
+  // not declared..
+ // const isFriend = friends.some(friend => friend._id === userId); u
+
+ console.log("friendrequests", friendRequests) //teswt
 
   return (
     <WidgetWrapper>
@@ -62,34 +86,56 @@ const FriendListWidget = ({ userId, isProfile, loggedInUserId }) => {
       >
         Friend List
       </Typography>
-      {isProfile && !isOwnProfile && (
-        <Button
-          onClick={addRemoveFriend}
-          sx={{
-            m: "0.5rem 0",
-            p: "1rem",
-            backgroundColor: palette.primary.main,
-            color: palette.background.alt,
-            "&:hover": { color: palette.primary.main },
-          }}
-        >
-          {friends.some(friend => friend._id === loggedInUserId) ? "Remove Friend" : "Add Friend"}
-        </Button>
-      )}
-      <Box display="flex" flexDirection="column" gap="1.5rem">
-        {friends.length > 0 ? (
-          friends.map((friend) => (
-            <Friend
-              key={friend._id}
-              friendId={friend._id}
-              name={`${friend.firstName} ${friend.lastName}`}
-              userPicturePath={friend.picturePath}
-            />
-          ))
+      {isProfile && isOwnProfile ? ( // Fix: Changed to a ternary operator for clarity
+        friendRequests.length > 0 ? ( // Check if there are friend requests
+          <List>
+            {friendRequests.map((friendId) => (
+              <ListItem key={friendId}>
+                <ListItemText primary={`Friend request from user ${friendId}`} />
+                <Button
+                  onClick={() => handleAccept(friendId)}
+                  disabled={isPending}
+                  sx={{
+                    m: "0.5rem 0",
+                    p: "1rem",
+                    backgroundColor: palette.primary.main,
+                    color: palette.background.alt,
+                    "&:hover": { color: palette.primary.main },
+                    "&:disabled": {
+                      backgroundColor: palette.neutral.light,
+                      color: palette.neutral.main,
+                    },
+                  }}
+                >
+                  Accept
+                </Button>
+                <Button
+                  onClick={() => handleReject(friendId)}
+                  disabled={isPending}
+                  sx={{
+                    m: "0.5rem 0",
+                    p: "1rem",
+                    backgroundColor: palette.primary.main,
+                    color: palette.background.alt,
+                    "&:hover": { color: palette.primary.main },
+                    "&:disabled": {
+                      backgroundColor: palette.neutral.light,
+                      color: palette.neutral.main,
+                    },
+                  }}
+                >
+                  Reject
+                </Button>
+              </ListItem>
+            ))}
+          </List>
         ) : (
-          <Typography>No friends to display.</Typography>
-        )}
-      </Box>
+          <Typography>No friends to display.</Typography> // Display message if no friend requests
+        )
+      ) : (
+        <Typography>No friends to display.</Typography> // Display message if not own profile
+      )}
+      
     </WidgetWrapper>
   );
 };

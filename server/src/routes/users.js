@@ -2,14 +2,15 @@ import express from "express";
 import {
   getUser,
   getUserFriends,
-  addRemoveFriend,
+  addFriend,
+  //removeFriend
 } from "../controllers/users.js";
 import { verifyToken } from "../middleware/auth.js";
 import User from "../models/User.js";
 
 const userRoutes = express.Router();
 
-/* Read */
+/* Search */
 userRoutes.get("/search", verifyToken, async (req, res) => {
     try {
       const { query } = req.query;
@@ -27,10 +28,15 @@ userRoutes.get("/search", verifyToken, async (req, res) => {
     }
   });
 
-userRoutes.get("/:id", verifyToken, getUser);
+/* Read */
+userRoutes.get("/:id", verifyToken, getUser); //if works dont change..
 userRoutes.get("/:id/friends", verifyToken, getUserFriends);
+//userRoutes.get("/:id/pendingRequest", verifyToken, );
 
-/* Update (add or remove friends) */
-userRoutes.patch("/:id/:friendId", verifyToken, addRemoveFriend);
+/* Update */
+userRoutes.patch("/addFriend", verifyToken, addFriend);
+//userRoutes.patch("/removeFriend", verifyToken, removeFriend)
+//pending request
+
 
 export default userRoutes;
