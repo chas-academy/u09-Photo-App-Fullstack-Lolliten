@@ -1,19 +1,16 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Box, Typography, List, ListItem, ListItemText, ListItemAvatar, Avatar, Button } from "@mui/material";
-import { useSelector, useDispatch } from "react-redux";
-//import { setFriends, setFriendRequests } from "../../state/reduxConfig";
+import { useSelector } from "react-redux";
 import Navbar from "./Navbar";
 
 const SearchResults = () => {
   const [searchResults, setSearchResults] = useState([]);
+  const [sentRequests, setSentRequests] = useState(new Set()); // Track sent requests
   const token = useSelector((state) => state.token);
   const loggedInUserId = useSelector((state) => state.user._id);
-  //const friends = useSelector((state) => state.user.friends);
   const location = useLocation();
   const searchQuery = new URLSearchParams(location.search).get("query");
-  //const dispatch = useDispatch();
-  
 
   useEffect(() => {
     const fetchSearchResults = async () => {
@@ -33,23 +30,6 @@ const SearchResults = () => {
     }
   }, [searchQuery, token]);
 
-  /* Possibility to remove friendrequest instead here ??? */
-
-  /*const addRemoveFriend = async (friendId) => {
-    const response = await fetch(
-      `http://localhost:3000/users/${loggedInUserId}/${friendId}`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = await response.json();
-    dispatch(setFriends({ friends: data }));
-  };*/
-
   const sendFriendRequest = async (friendId) => {
     const response = await fetch(
       `http://localhost:3000/users/${friendId}/friend-request`,
@@ -64,11 +44,7 @@ const SearchResults = () => {
     );
     const data = await response.json();
     // Update UI to show pending request
-    setSearchResults(prevResults =>
-      prevResults.map(user =>
-        user._id === friendId ? { ...user, requestSent: true } : user
-      )
-    );
+    setSentRequests((prev) => new Set(prev).add(friendId)); // Add to sent requests
   };
 
   return (
@@ -92,9 +68,9 @@ const SearchResults = () => {
                   onClick={() => sendFriendRequest(user._id)}
                   variant="contained"
                   color="primary"
-                  disabled={user.requestSent}
+                  disabled={sentRequests.has(user._id)} // Disable if request sent
                 >
-                  {user.requestSent ? "Request Sent" : "Add Friend"}
+                  {sentRequests.has(user._id) ? "Request Sent" : "Add Friend"}
                 </Button>
               )}
             </ListItem>

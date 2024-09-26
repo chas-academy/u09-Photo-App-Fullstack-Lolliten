@@ -3,7 +3,7 @@ import {
   getUser,
   getUserFriends,
   addFriend,
-  //removeFriend
+  removeFriend
 } from "../controllers/users.js";
 import { verifyToken } from "../middleware/auth.js";
 import User from "../models/User.js";
@@ -35,7 +35,7 @@ userRoutes.get("/:id/friends", verifyToken, getUserFriends);
 
 /* Update */
 userRoutes.patch("/addFriend", verifyToken, addFriend);
-//userRoutes.patch("/removeFriend", verifyToken, removeFriend)
+userRoutes.patch("/removeFriend", verifyToken, removeFriend);
 //pending request
 
 

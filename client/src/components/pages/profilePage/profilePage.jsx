@@ -99,11 +99,6 @@ useEffect(() => {
             loggedInUserId={loggedInUser._id}
             pendingRequests={pendingRequests}
           />
-          {isOwnProfile && (
-            <Box mt="2rem">
-              <FriendListWidget />
-            </Box>
-          )}
         </Box>
         <Box
           flexBasis={isNonMobileScreens ? "42%" : undefined}

@@ -51,13 +51,13 @@ export const authSlice = createSlice({
     /* when array works. if first element in array is null then set state.user.friendRequest into []  */
     setFriendRequests: (state, action) => {
     if (Array.isArray(action.payload.friendRequests)) {
-        //state.user.friendRequests = action.payload.friendRequests;
+        state.user.friendRequests = action.payload.friendRequests;
         console.log("set friend request: isArray")
     } else {
         console.log("set friend request: is not Array")
-        //const newFriendRequests = state.user.friendRequests
-        //newFriendRequests.push(action.payload.friendRequests)
-        //state.user.friendRequests = newFriendRequests;
+        const newFriendRequests = state.user.friendRequests
+        newFriendRequests.push(action.payload.friendRequests)
+        state.user.friendRequests = newFriendRequests;
     }
 },
     /*    
