@@ -12,6 +12,8 @@ import { verifyToken } from "./src/middleware/auth.js";
 import { createPost } from "./src/controllers/posts.js";
 import connectDB from "./src/db/db.js";
 
+//Fixed weir derror need to commit, delete this comment
+
 dotenv.config();
 
 /* Initialize Database Connection */
