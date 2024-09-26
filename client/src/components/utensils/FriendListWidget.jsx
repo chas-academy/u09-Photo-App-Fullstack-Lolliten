@@ -64,8 +64,9 @@ const FriendListWidget = ({ userId, isProfile, loggedInUserId, pendingRequests }
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      dispatch(setFriendRequests(friendRequests.filter(id => id !== friendId))); // Remove rejected request
-      dispatch(setFriendRequests({ friendRequests: friendRequests.filter(id => id !== friendId) })); // Remove from requests
+      // Only dispatch once to update friend requests
+      dispatch(setFriendRequests({ friendRequests: friendRequests.filter(id => id !== friendId) }));
+      //dispatch(setFriendRequests(friendRequests.filter(id => id !== friendId))); // Remove rejected request
     } catch (error) {
       console.error("Error rejecting friend request:", error);
     }
