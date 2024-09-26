@@ -9,15 +9,13 @@ import UserWidget from "../../utensils/UserWidget";
 import PostWidget from "../../utensils/PostWidget";
 //import FriendRequests from "../../scenes/FriendRequest";
 
-
 const ProfilePage = () => {
-  const [user, setUser] = useState(null); //if uncontrolled change value from null
+  const [user, setUser] = useState(null);
   const [pendingRequests, setPendingRequests] = useState([]);
   const { userId } = useParams();
-  console.log("userId from params:", userId); //test
   const token = useSelector((state) => state.token);
-  const loggedInUser = useSelector((state) => state.user); //Error in browser undefined
-console.log("loggedInUser", loggedInUser._id)
+  const loggedInUser = useSelector((state) => state.user);
+  console.log("loggedInUser", loggedInUser._id);
 
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   const isOwnProfile = userId === loggedInUser._id;
@@ -64,19 +62,10 @@ console.log("loggedInUser", loggedInUser._id)
     }
   };
 
-  /*  This instead ???
-useEffect(() => {
-    getUser();
-    if (loggedInUserId && token) {
-        getPendingRequests();
-    }
-}, [loggedInUserId, token]); */
-
   useEffect(() => {
-    //useEffect after or before functions ???
     getUser();
     getPendingRequests();
-  }, []); // loggedInUserId and token a s a dependency too ???
+  }, []);
 
   if (!user || userId === undefined) return null;
 

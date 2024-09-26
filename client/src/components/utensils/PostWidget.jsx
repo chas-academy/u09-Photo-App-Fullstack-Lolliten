@@ -6,7 +6,6 @@ import {
   } from "@mui/icons-material";
   import { Box, Divider, IconButton, Typography, useTheme } from "@mui/material";
   import FlexBetween from "../utensils/FlexBetween";
-  //import Friend from "../pages/friend/Friend";
   import WidgetWrapper from "../utensils/WidgetWrapper";
   import { useState } from "react";
   import { useDispatch, useSelector } from "react-redux";
@@ -33,6 +32,7 @@ import {
     const main = palette.neutral.main;
     const primary = palette.primary.main;
   
+    /* Likes on posts */
     const patchLike = async () => {
       if (!postId || !loggedInUserId) return; // Guard clause
       const response = await fetch(`http://localhost:3000/posts/${postId}/like`, {

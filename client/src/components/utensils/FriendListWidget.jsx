@@ -1,20 +1,32 @@
-import { Box, Typography, useTheme, Button, List, ListItem, ListItemText } from "@mui/material";
+import {
+  Box,
+  Typography,
+  useTheme,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
 import WidgetWrapper from "../utensils/WidgetWrapper";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setFriends, setFriendRequests } from "../../state/reduxConfig";
 
-const FriendListWidget = ({ userId, isProfile, loggedInUserId, pendingRequests }) => {
+const FriendListWidget = ({
+  userId,
+  // isProfile,
+  loggedInUserId,
+}) => {
   const dispatch = useDispatch();
   const { palette } = useTheme();
   const token = useSelector((state) => state.token);
-  const friendRequests = useSelector((state) => state.user.friendRequests) || [];
+  const friendRequests =
+    useSelector((state) => state.user.friendRequests) || [];
   const friends = useSelector((state) => state.user.friends) || []; // Get friends from state
 
-  const isOwnProfile = loggedInUserId === userId;
- 
+  // const isOwnProfile = loggedInUserId === userId;
 
-/* Get friend list */ 
+  /* Get friend list */
   const getFriends = async () => {
     try {
       if (userId === undefined) {
@@ -47,7 +59,11 @@ const FriendListWidget = ({ userId, isProfile, loggedInUserId, pendingRequests }
     });
     const data = await response.json();
     dispatch(setFriends({ friends: [...friends, { _id: friendId }] })); // Add accepted friend
-    dispatch(setFriendRequests({ friendRequests: friendRequests.filter(id => id !== friendId) })); // Remove from requests
+    dispatch(
+      setFriendRequests({
+        friendRequests: friendRequests.filter((id) => id !== friendId),
+      })
+    );
   };
 
   /* Handle reject friend request */
@@ -65,8 +81,11 @@ const FriendListWidget = ({ userId, isProfile, loggedInUserId, pendingRequests }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       // Only dispatch once to update friend requests
-      dispatch(setFriendRequests({ friendRequests: friendRequests.filter(id => id !== friendId) }));
-      //dispatch(setFriendRequests(friendRequests.filter(id => id !== friendId))); // Remove rejected request
+      dispatch(
+        setFriendRequests({
+          friendRequests: friendRequests.filter((id) => id !== friendId),
+        })
+      );
     } catch (error) {
       console.error("Error rejecting friend request:", error);
     }
@@ -121,7 +140,6 @@ const FriendListWidget = ({ userId, isProfile, loggedInUserId, pendingRequests }
             <ListItemText primary={`Friend request from user ${friendId}`} />
             <Button
               onClick={() => handleAccept(friendId)}
-            
               sx={{
                 m: "0.5rem 0",
                 p: "1rem",
@@ -138,7 +156,6 @@ const FriendListWidget = ({ userId, isProfile, loggedInUserId, pendingRequests }
             </Button>
             <Button
               onClick={() => handleReject(friendId)}
-             
               sx={{
                 m: "0.5rem 0",
                 p: "1rem",

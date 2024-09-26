@@ -57,9 +57,9 @@ const SearchResults = () => {
         <List>
           {searchResults.map((user) => (
             <ListItem key={user._id}>
-              <ListItemAvatar>
-                <Avatar src={`http://localhost:3000/assets/${user.picturePath}`} />
-              </ListItemAvatar>
+               <ListItemAvatar>
+                <Avatar src= {`http://localhost:3000/uploads/${user.picturePath}`} />
+              </ListItemAvatar>              
               <ListItemText 
                 primary={`${user.firstName} ${user.lastName}`}
               />

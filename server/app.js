@@ -1,7 +1,6 @@
 import express from "express";
 import multer from "multer";
 import cors from "cors";
-import path from "path";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import authRoutes from "./src/routes/auth.js";
@@ -12,7 +11,6 @@ import Post from "./src/models/Post.js";
 import { verifyToken } from "./src/middleware/auth.js";
 import { createPost } from "./src/controllers/posts.js";
 import connectDB from "./src/db/db.js";
-import searchRoutes from "./src/routes/search.js";
 
 dotenv.config();
 
@@ -21,7 +19,7 @@ connectDB();
 
 const app = express();
 app.use(express.json());
-app.use(express.static("uploads"));
+app.use(express.static("public"));
 
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
@@ -61,7 +59,7 @@ app.post("/api/upload", upload.single("image"), async (req, res) => {
 });
 
 /* This why profile pic dont appear ??? */
-app.get("/img/:id", async (req, res) => {
+/*app.get("/img/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const image = await Post.findById(id);
@@ -72,7 +70,7 @@ app.get("/img/:id", async (req, res) => {
   } catch (error) {
     res.send({ Error: "Unable to get image" });
   }
-});
+});*/
 
 //move to auth, protected routes ??
 app.post("/post", verifyToken, upload.single("picture"), createPost); //createPost is a middleware
@@ -147,6 +145,7 @@ app.patch("/users/:id/accept-friend", verifyToken, async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 });
+
 app.patch("/users/:id/reject-friend", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
