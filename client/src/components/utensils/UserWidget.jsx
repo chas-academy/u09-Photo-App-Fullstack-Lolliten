@@ -30,20 +30,25 @@ const getUser = async () => {
   setUser(data);
 }
 
+const editProfile = () => { 
+   //navigate //edit-page, new view with form for changing
+  //fetch user info, for password, verfiy user knows old password, in backend validate old PW (check hash)
+  //if right take new hash and store in DB
+  //picture is handled with multer, (before changing delete old pic then put in new picturePath)
+}
+
+
 useEffect(() => {
-  getUser(); // add any dependencies below ?
-}, []); // eslint-disable-line react-hooks/exhaustive-deps
+  getUser();
+}, []);
 
   if (!user) {
     return null;
   }
 
-console.log(user); //test
-
   const { 
     firstName,
     lastName,
-    viewedProfile,
     friends,
   } = user;
 
@@ -74,7 +79,7 @@ console.log(user); //test
             <Typography color={medium}>{friends.length} friends</Typography>
           </Box>
         </FlexBetween>
-        <ManageAccountsOutlined />
+        <ManageAccountsOutlined onClick={(editProfile)} />
       </FlexBetween>
       <Divider />
     </WidgetWrapper>
