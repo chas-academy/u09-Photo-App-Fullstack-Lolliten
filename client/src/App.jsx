@@ -25,7 +25,7 @@ function App() {
             <Route path="/welcome" element={<WelcomePage />} />
             <Route path="/search" element={<SearchResults />} />
             <Route path="/profile/:userId" element={<ProfilePage />} />
-            <Route path="/edit-profile" element={<EditProfilePage />} />
+            <Route path="/edit-profile/:userId" element={<EditProfilePage />} />
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

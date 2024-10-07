@@ -60,7 +60,7 @@ useEffect(() => {
       <FlexBetween
         gap="0.5rem"
         pb="1.1rem"
-        onClick={() => navigate("/edit-profile")}
+        onClick={() => navigate(`/edit-profile/${userId}`)}
       >
         <FlexBetween gap="1rem">
           <UserImage image={picturePath} />

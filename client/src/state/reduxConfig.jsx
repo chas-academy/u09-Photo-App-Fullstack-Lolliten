@@ -60,14 +60,6 @@ export const authSlice = createSlice({
         state.user.friendRequests = newFriendRequests;
     }
 },
-    /*    
-   if (Array.isArray(action.payload.friendRequests)) {
-        state.user.friendRequests = action.payload.friendRequests;
-    } else {
-        const newFriendRequests = state.user.friendRequests
-        newFriendRequests.push(action.payload.friendRequests)
-        state.user.friendRequests = newFriendRequests;
-    } */
     // Updates the search query
     setSearchQuery: (state, action) => {
       state.search.query = action.payload;
