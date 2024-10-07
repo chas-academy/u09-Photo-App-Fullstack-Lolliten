@@ -7,7 +7,6 @@ import FriendListWidget from "../../utensils/FriendListWidget";
 import MyPostWidget from "../../utensils/MyPostWidget";
 import UserWidget from "../../utensils/UserWidget";
 import PostWidget from "../../utensils/PostWidget";
-//import FriendRequests from "../../scenes/FriendRequest";
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
@@ -15,7 +14,7 @@ const ProfilePage = () => {
   const { userId } = useParams();
   const token = useSelector((state) => state.token);
   const loggedInUser = useSelector((state) => state.user);
-  console.log("loggedInUser", loggedInUser._id);
+  console.log("loggedInUser", loggedInUser._id); //test
 
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   const isOwnProfile = userId === loggedInUser._id;
