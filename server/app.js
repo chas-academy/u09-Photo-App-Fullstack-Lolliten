@@ -13,8 +13,6 @@ import { createPost } from "./src/controllers/posts.js";
 import { deleteUser } from "./src/controllers/users.js";
 import connectDB from "./src/db/db.js";
 
-//Fixed weir derror need to commit, delete this comment
-
 dotenv.config();
 
 /* Initialize Database Connection */
@@ -23,9 +21,7 @@ connectDB();
 const app = express();
 app.use(express.json());
 app.use(express.static("public"));
-
-app.use(bodyParser.json({ limit: "30mb", extended: true }));
-app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
+app.use(express.urlencoded({ limit: "30mb", extended: true }));
 
 /* Enable CORS for all routes below */
 app.use(
@@ -42,7 +38,8 @@ const storage = multer.diskStorage({
     cb(null, "uploads");
   },
   filename: function (_req, file, cb) {
-    cb(null, file.originalname); //Consider adding info, like < Date,now()+ "-" + > , or other info
+    cb(null, file.originalname);
+    //Consider adding info, like < Date,now()+ "-" + > , or other info
   },
 });
 const upload = multer({ storage }); //defining upload
@@ -65,19 +62,18 @@ app.post("/api/upload", upload.single("image"), async (req, res) => {
 app.post("/post", verifyToken, upload.single("picture"), createPost); //createPost is a middleware
 
 /* Get User */
-app.get('/user/:id', async (req, res) => { // getUser from controllers here too?
+app.get("/user/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    // Fetch user from database
     const user = await User.findById(id);
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
     res.status(200).json(user);
   } catch (error) {
-    console.error('Error fetching user:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error("Error fetching user:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
@@ -86,7 +82,7 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", postsRoutes);
 
-/* Pending friend routes */
+/* Pending friend */
 app.post("/users/:id/friend-request", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
@@ -105,7 +101,6 @@ app.post("/users/:id/friend-request", verifyToken, async (req, res) => {
   }
 });
 
-/* Accept friend request */
 app.patch("/users/:id/accept-friend", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
@@ -129,7 +124,6 @@ app.patch("/users/:id/accept-friend", verifyToken, async (req, res) => {
   }
 });
 
-/* Reject friend request */
 app.patch("/users/:id/reject-friend", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
@@ -149,7 +143,6 @@ app.patch("/users/:id/reject-friend", verifyToken, async (req, res) => {
   }
 });
 
-
 const PORT = process.env.PORT || 3000;
-  
-    app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+
+app.listen(PORT, () => console.log(`Server Port: ${PORT}`));

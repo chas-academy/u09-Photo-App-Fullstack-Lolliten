@@ -11,6 +11,7 @@ import {
 import Dropzone from "react-dropzone";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const EditProfilePage = () => {
   const { userId } = useParams();
@@ -27,6 +28,7 @@ const EditProfilePage = () => {
   const theme = useTheme();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const token = useSelector((state) => state.token);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getUser = async () => {
@@ -55,13 +57,11 @@ const EditProfilePage = () => {
   //if right take new hash and store in DB
   //picture is handled with multer, (before changing delete old pic then put in new picturePath)
 
-  /* Handle input change */
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
 
-  /* Handle form submission to update user data */
   const handleUpdate = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -75,7 +75,6 @@ const EditProfilePage = () => {
     });
 
     if (response.ok) {
-      // Handle successful update
       console.log("Profile updated successfully"); //test
     } else {
       const error = await response.json();
@@ -86,9 +85,13 @@ const EditProfilePage = () => {
   const handleDeleteAccount = async () => {
     const response = await fetch(`http://localhost:3000/users/${userId}`, {
       method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
     });
     if (response.ok) {
-      console.log("Account deleted successfully");
+      console.log("Account deleted successfully"); //test
+      
+        navigate("/");
+      
     } else {
       const error = await response.json();
       setErrorMessage(error.message || "Failed to delete account");

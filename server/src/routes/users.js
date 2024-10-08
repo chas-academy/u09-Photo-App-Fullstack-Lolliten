@@ -31,11 +31,11 @@ userRoutes.get("/search", verifyToken, async (req, res) => {
 
 userRoutes.get("/:id", verifyToken, getUser);
 userRoutes.get("/:id/friends", verifyToken, getUserFriends);
-userRoutes.get("/:id/pendingRequest", verifyToken, getPendingRequests);
+userRoutes.get("/:id/pendingRequests", verifyToken, getPendingRequests);
 
 userRoutes.patch("/addFriend", verifyToken, addFriend);
 userRoutes.patch("/removeFriend", verifyToken, removeFriend);
 
-userRoutes.delete("/deleteUser/:id", verifyToken, deleteUser);
+userRoutes.delete("/:id", verifyToken, deleteUser);
 
 export default userRoutes;
