@@ -44,12 +44,3 @@ const UserSchema = new mongoose.Schema(
 const User = mongoose.model("User", UserSchema)
 
 export default User;
-
-/*
-location:{
-    type: String,
-    occupation: String,
-    viewProfile: Number,
-    impressions: Number,
-},
-*/

@@ -35,7 +35,7 @@ app.use(
 /* Multer config */ //Is multer needed here?
 const storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
-    cb(null, "uploads");
+    cb(null, "public/uploads");  //changed from /uploads --> public/uploads
   },
   filename: function (_req, file, cb) {
     cb(null, file.originalname);
@@ -44,7 +44,13 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage }); //defining upload
 
+/* Routes */
+app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
+app.use("/posts", postsRoutes);
+
 /* Routes with files */
+//changed /api/upload --> "/api/public/upload"
 app.post("/api/upload", upload.single("image"), async (req, res) => {
   try {
     const { path, filename } = req.file;
@@ -76,11 +82,6 @@ app.get("/user/:id", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
-/* Routes */
-app.use("/auth", authRoutes);
-app.use("/users", userRoutes);
-app.use("/posts", postsRoutes);
 
 /* Pending friend */
 app.post("/users/:id/friend-request", verifyToken, async (req, res) => {

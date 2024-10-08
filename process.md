@@ -27,9 +27,7 @@
         - app.js:
         - index.js: 
 
-    - Skapa Crud i routes users
-    - 
-
+    - CRUD
     
     Frontend: 
 

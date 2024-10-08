@@ -110,7 +110,7 @@ const Form = () => {
     if (isRegister) await register(values, onSubmitProps);
   };
 
-  //inside the  {({ is values that makes the form smoother and easier to use.
+  /* inside the  {({ is values that makes the form smoother and easier to use. */
   return (
     <Formik
       onSubmit={handleFormSubmit}
