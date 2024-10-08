@@ -10,6 +10,7 @@ import User from "./src/models/User.js";
 import Post from "./src/models/Post.js";
 import { verifyToken } from "./src/middleware/auth.js";
 import { createPost } from "./src/controllers/posts.js";
+import { deleteUser } from "./src/controllers/users.js";
 import connectDB from "./src/db/db.js";
 
 //Fixed weir derror need to commit, delete this comment
@@ -30,7 +31,7 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(
   cors({
     origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "PATCH"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   })
 );
@@ -60,28 +61,12 @@ app.post("/api/upload", upload.single("image"), async (req, res) => {
   }
 });
 
-/* This why profile pic dont appear ??? */
-/*app.get("/img/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const image = await Post.findById(id);
-    if (!image) res.send({ msg: "Image Not Found" });
-
-    const imagePath = path.join(__dirname, "uploads", image.filename);
-    res.sendFile(imagePath);
-  } catch (error) {
-    res.send({ Error: "Unable to get image" });
-  }
-});*/
-
 //move to auth, protected routes ??
 app.post("/post", verifyToken, upload.single("picture"), createPost); //createPost is a middleware
 
 /* Get User */
 app.get('/user/:id', async (req, res) => { // getUser from controllers here too?
-  const { id } = req.params; //userId or id ??
-  console.log('Received user ID:', id); // test
-
+  const { id } = req.params;
   try {
     // Fetch user from database
     const user = await User.findById(id);
@@ -100,11 +85,6 @@ app.get('/user/:id', async (req, res) => { // getUser from controllers here too?
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", postsRoutes);
-
-/* New friend request  */
-//Is this etup right ???
-// create sendFriendRequestController+
-//.post('/users/:userId/send-friend-request', authMiddleware, sendFriendRequestController);
 
 /* Pending friend routes */
 app.post("/users/:id/friend-request", verifyToken, async (req, res) => {
@@ -125,6 +105,7 @@ app.post("/users/:id/friend-request", verifyToken, async (req, res) => {
   }
 });
 
+/* Accept friend request */
 app.patch("/users/:id/accept-friend", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
@@ -148,6 +129,7 @@ app.patch("/users/:id/accept-friend", verifyToken, async (req, res) => {
   }
 });
 
+/* Reject friend request */
 app.patch("/users/:id/reject-friend", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
@@ -167,24 +149,7 @@ app.patch("/users/:id/reject-friend", verifyToken, async (req, res) => {
   }
 });
 
+
 const PORT = process.env.PORT || 3000;
   
     app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
-
-
-/* ADD DATA ONE TIME FROM DATA folder: TESTDATA*/
-// User.insertMany(users);
-// Post.insertMany(posts);
-/*
-
-** Consider changing the import image method to import.meta.url. **
-
-// Sets up CORS to allow requests from the frontend domain and allows cookies to be included
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "PATCH"],
-    credentials: true,
-  })
-);
-*/

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Navbar from "../../scenes/Navbar";
 import {
   Box,
   Button,
@@ -19,6 +20,7 @@ const EditProfilePage = () => {
     lastName: "",
     email: "",
     picturePath: "",
+    password: "",
     oldPassword: "",
   });
   const [errorMessage, setErrorMessage] = useState(null);
@@ -39,6 +41,7 @@ const EditProfilePage = () => {
           lastName: data.lastName,
           email: data.email,
           picturePath: data.picturePath,
+          password: data.password,
           oldPassword: "", // Initialize oldPassword here
         });
       } else {
@@ -46,7 +49,11 @@ const EditProfilePage = () => {
       }
     };
     getUser();
-  }, [userId]);
+  }, [userId, token]);
+
+   //fetch user info, for password, verfiy user knows old password, in backend validate old PW (check hash)
+  //if right take new hash and store in DB
+  //picture is handled with multer, (before changing delete old pic then put in new picturePath)
 
   /* Handle input change */
   const handleInputChange = (e) => {
@@ -91,6 +98,8 @@ const EditProfilePage = () => {
   if (!user) return null;
 
   return (
+    <Box>
+      <Navbar />
     <Box
       component="form"
       onSubmit={handleUpdate}
@@ -193,6 +202,7 @@ const EditProfilePage = () => {
       >
         Delete Account
       </Button>
+    </Box>
     </Box>
   );
 };
