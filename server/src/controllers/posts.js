@@ -33,8 +33,8 @@ connect to endpoint and get the data, when working then filter
 export const getFeedPosts = async (req, res) => {
   try {
     const posts = await Post.find(); //(Post model)
-    .select("firstName", "lastName", "description", "picturePath", "userId") // Specify the fields to include
-      .populate("userId", "firstName", "lastName", "picturePath"); // Populate user details if needed
+    // .select("firstName", "lastName", "description", "picturePath", "userId") // Specify the fields to include
+    //   .populate("userId", "firstName", "lastName", "picturePath"); // Populate user details if needed
 
     res.status(200).json(posts);
   } catch (err) {
