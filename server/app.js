@@ -50,7 +50,6 @@ app.use("/users", userRoutes);
 app.use("/posts", postsRoutes);
 
 /* Routes with files */
-//changed /api/upload --> "/api/public/upload"
 app.post("/api/upload", upload.single("image"), async (req, res) => {
   try {
     const { path, filename } = req.file;

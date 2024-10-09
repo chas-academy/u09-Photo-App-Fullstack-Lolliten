@@ -29,20 +29,31 @@ const loginSchema = yup.object().shape({
   password: yup.string().required("required"),
 });
 
-const initialValuesRegister = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  picture: "",
-};
+// const initialValuesRegister = {
+//   firstName: "",
+//   lastName: "",
+//   email: "",
+//   picture: "",
+// };
 
-const initialValuesLogin = {
-  email: "",
-  password: "",
-};
+// const initialValuesLogin = {
+//   email: "",
+//   password: "",
+// };
 
 const Form = () => {
   const [pageType, setPageType] = useState("login");
+  const [initialValuesRegister, setInitialValuesRegister] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    picture: "",
+  })
+  const [initialValuesLogin, setInitialValuesLogin] = useState(
+    {
+      email: "",
+      password: "",
+    })
   const [errorMessage, setErrorMessage] = useState(null);
   const { palette } = useTheme();
   const dispatch = useDispatch();
