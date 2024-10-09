@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Navbar from "../../scenes/Navbar";
 import {
   Box,
   Button,
@@ -10,6 +11,7 @@ import {
 import Dropzone from "react-dropzone";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const EditProfilePage = () => {
   const { userId } = useParams();
@@ -19,12 +21,14 @@ const EditProfilePage = () => {
     lastName: "",
     email: "",
     picturePath: "",
+    password: "",
     oldPassword: "",
   });
   const [errorMessage, setErrorMessage] = useState(null);
   const theme = useTheme();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const token = useSelector((state) => state.token);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getUser = async () => {
@@ -39,6 +43,7 @@ const EditProfilePage = () => {
           lastName: data.lastName,
           email: data.email,
           picturePath: data.picturePath,
+          password: data.password,
           oldPassword: "", // Initialize oldPassword here
         });
       } else {
@@ -46,15 +51,17 @@ const EditProfilePage = () => {
       }
     };
     getUser();
-  }, [userId]);
+  }, [userId, token]);
 
-  /* Handle input change */
+   //fetch user info, for password, verfiy user knows old password, in backend validate old PW (check hash)
+  //if right take new hash and store in DB
+  //picture is handled with multer, (before changing delete old pic then put in new picturePath)
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
 
-  /* Handle form submission to update user data */
   const handleUpdate = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -68,7 +75,6 @@ const EditProfilePage = () => {
     });
 
     if (response.ok) {
-      // Handle successful update
       console.log("Profile updated successfully"); //test
     } else {
       const error = await response.json();
@@ -79,9 +85,13 @@ const EditProfilePage = () => {
   const handleDeleteAccount = async () => {
     const response = await fetch(`http://localhost:3000/users/${userId}`, {
       method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
     });
     if (response.ok) {
-      console.log("Account deleted successfully");
+      console.log("Account deleted successfully"); //test
+      
+        navigate("/");
+      
     } else {
       const error = await response.json();
       setErrorMessage(error.message || "Failed to delete account");
@@ -91,6 +101,8 @@ const EditProfilePage = () => {
   if (!user) return null;
 
   return (
+    <Box>
+      <Navbar />
     <Box
       component="form"
       onSubmit={handleUpdate}
@@ -193,6 +205,7 @@ const EditProfilePage = () => {
       >
         Delete Account
       </Button>
+    </Box>
     </Box>
   );
 };

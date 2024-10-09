@@ -10,9 +10,8 @@ import User from "./src/models/User.js";
 import Post from "./src/models/Post.js";
 import { verifyToken } from "./src/middleware/auth.js";
 import { createPost } from "./src/controllers/posts.js";
+import { deleteUser } from "./src/controllers/users.js";
 import connectDB from "./src/db/db.js";
-
-//Fixed weir derror need to commit, delete this comment
 
 dotenv.config();
 
@@ -37,9 +36,11 @@ app.use(
 const storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
     cb(null, "public/uploads");
+
   },
   filename: function (_req, file, cb) {
-    cb(null, file.originalname); //Consider adding info, like < Date,now()+ "-" + > , or other info
+    cb(null, file.originalname);
+    //Consider adding info, like < Date,now()+ "-" + > , or other info
   },
 });
 const upload = multer({ storage }); //defining upload
@@ -68,12 +69,10 @@ app.post("/post", verifyToken, upload.single("picture"), createPost); //createPo
 
 /* Get User */
 app.get("/user/:id", async (req, res) => {
-  // getUser from controllers here too?
-  const { id } = req.params; //userId or id ??
+  const { id } = req.params;
   console.log("Received user ID:", id); // test
 
   try {
-    // Fetch user from database
     const user = await User.findById(id);
 
     if (!user) {

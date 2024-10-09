@@ -3,40 +3,39 @@ import {
   getUser,
   getUserFriends,
   addFriend,
-  removeFriend
+  removeFriend,
+  getPendingRequests,
+  deleteUser,
 } from "../controllers/users.js";
 import { verifyToken } from "../middleware/auth.js";
 import User from "../models/User.js";
 
 const userRoutes = express.Router();
 
-/* Search */
 userRoutes.get("/search", verifyToken, async (req, res) => {
-    try {
-      const { query } = req.query;
-      console.log(query);
-      const users = await User.find({
-        $or: [
-          { firstName: { $regex: query, $options: "i" } },
-          { lastName: { $regex: query, $options: "i" } },
-        ],
-      }).select("firstName lastName picturePath");
-  
-      res.status(200).json(users);
-    } catch (err) {
-      res.status(404).json({ message: err.message });
-    }
-  });
+  try {
+    const { query } = req.query;
+    console.log(query);
+    const users = await User.find({
+      $or: [
+        { firstName: { $regex: query, $options: "i" } },
+        { lastName: { $regex: query, $options: "i" } },
+      ],
+    }).select("firstName lastName picturePath");
 
-/* Read */
-userRoutes.get("/:id", verifyToken, getUser); //if works dont change..
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+});
+
+userRoutes.get("/:id", verifyToken, getUser);
 userRoutes.get("/:id/friends", verifyToken, getUserFriends);
-//userRoutes.get("/:id/pendingRequest", verifyToken, );
+userRoutes.get("/:id/pendingRequests", verifyToken, getPendingRequests);
 
-/* Update */
 userRoutes.patch("/addFriend", verifyToken, addFriend);
 userRoutes.patch("/removeFriend", verifyToken, removeFriend);
-//pending request
 
+userRoutes.delete("/:id", verifyToken, deleteUser);
 
 export default userRoutes;

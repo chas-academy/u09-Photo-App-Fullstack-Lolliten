@@ -29,20 +29,31 @@ const loginSchema = yup.object().shape({
   password: yup.string().required("required"),
 });
 
-const initialValuesRegister = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  picture: "",
-};
+// const initialValuesRegister = {
+//   firstName: "",
+//   lastName: "",
+//   email: "",
+//   picture: "",
+// };
 
-const initialValuesLogin = {
-  email: "",
-  password: "",
-};
+// const initialValuesLogin = {
+//   email: "",
+//   password: "",
+// };
 
 const Form = () => {
   const [pageType, setPageType] = useState("login");
+  const [initialValuesRegister, setInitialValuesRegister] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    picture: "",
+  })
+  const [initialValuesLogin, setInitialValuesLogin] = useState(
+    {
+      email: "",
+      password: "",
+    })
   const [errorMessage, setErrorMessage] = useState(null);
   const { palette } = useTheme();
   const dispatch = useDispatch();
@@ -51,9 +62,7 @@ const Form = () => {
   const isLogin = pageType === "login";
   const isRegister = pageType === "register";
 
-  /* Register */
   const register = async (values, onSubmitProps) => {
-    // this allows to send form info with image
     const formData = new FormData();
     for (let value in values) {
       formData.append(value, values[value]);
@@ -76,7 +85,6 @@ const Form = () => {
     navigate("/");
   };
 
-  /* Login */
   const login = async (values, onSubmitProps) => {
     const loggedInResponse = await fetch(`http://localhost:3000/auth/login`, {
       method: "POST",
@@ -113,7 +121,7 @@ const Form = () => {
     if (isRegister) await register(values, onSubmitProps);
   };
 
-  //inside the  {({ is values that makes the form smoother and easier to use.
+  /* inside the  {({ is values that makes the form smoother and easier to use. */
   return (
     <Formik
       onSubmit={handleFormSubmit}

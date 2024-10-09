@@ -20,9 +20,3 @@ export const verifyToken = async (req, res, next) => { // Added 'next' parameter
     res.status(500).json({ message: "Invalid Token" });
   }
 };
-
-//import to every router needed in
-/*
-Where should the expire time be??
-process.env.JWT_TOKEN, {expiresIn: 3600});
-*/

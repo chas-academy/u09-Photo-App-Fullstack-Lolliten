@@ -1,7 +1,6 @@
 import User from "../models/User.js";
 import mongoose from "mongoose";
 
-/* Read: Get user */
 export const getUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -30,26 +29,17 @@ const formatFriends = (friends) => {
   });
 };
 
-/* Read: Get user's friends */
 export const getUserFriends = async (req, res) => {
   try {
-    const { id } = req.params; 
-    //const { friendsId, userId } = req.body;
-    //console.log("Fetching friends for userId:", userId); //test
-    console.log("Fetching friends for userId:", id); //test
+    const { id } = req.params;
 
     const user = await User.findById(id);
 
     if (!user) {
-      console.log(`No user found with ID: ${id}`); //test
       return res.status(404).json({ message: "User not found" });
     }
 
-    console.log("User found:", user); //test
-    console.log("User friends:", user.friends); //test
-
     const friends = await User.find({ _id: { $in: user.friends } });
-    console.log("Friends fetched:", friends); // test
 
     const formattedFriends = formatFriends(friends);
     res.status(200).json(formattedFriends);
@@ -59,22 +49,14 @@ export const getUserFriends = async (req, res) => {
   }
 };
 
-/* Update */
 export const addFriend = async (req, res) => {
   try {
     const { friendId, userId } = req.body;
-    console.log(friendId, userId) //test
 
     const user = await User.findById(userId);
     const friend = await User.findById(friendId);
 
-    console.log("user", user); //test
-    console.log("friend", friend); //test
-
     if (user.friends.includes(friendId)) {
-      /*user.friends = user.friends.filter((id) => id !== friendId);
-      friend.friends = friend.friends.filter((id) => id !== userId);*/
-      // dont add a second time, inform user
     } else {
       user.friends.push(friendId);
       friend.friends.push(userId);
@@ -94,7 +76,6 @@ export const addFriend = async (req, res) => {
   }
 };
 
-/* Remove friend */
 export const removeFriend = async (req, res) => {
   try {
     const { userId, friendId } = req.body;
@@ -105,7 +86,6 @@ export const removeFriend = async (req, res) => {
     if (!user || !friend) {
       return res.status(404).json({ message: "User or friend not found" });
     }
-
     // Remove friendId from user's friend list
     user.friends = user.friends.filter((id) => id.toString() !== friendId);
     // Remove userId from friend's friend list
@@ -120,46 +100,29 @@ export const removeFriend = async (req, res) => {
   }
 };
 
-/*export const removeFriend = async (req, res) => {
+export const getPendingRequests = async (req, res) => {
   try {
-    const { userId, friendId } = req.body;
+    const { id } = req.params;
 
-    const user = await User.findById(userId);
-    const friend = await User.findById(friendId);
+    const user = await User.findById(id, "friendRequests");
+    return res.status(200).send(user);
 
-    if (!user || !friend) {
-      return res.status(404).json({ message: "User or friend not found" });
-    }
-
-    //Remove friendId from user friend list
-    user.friends = user.friends.filter((id) => id.toString() !== friendId);
-    //Remove userId from friends list
-    friend.friends = friend.friends.filter((id) => id.toString() !== userId);
-
-    //Remove friendId from users friendrequest list
-    if (user.friendRequests) {
-      user.friendRequests = user.friendRequests.filter(
-        (id) => id.toString() !== friendId
-      );
-    }
-
-    await user.save();
-    await friend.save();
-
-    //Fetch updated friends list
-    const updatedFriends = await Promise.all(
-      user.friends.map((id) => User.findById(id))
-    );
-    const formattedFriends = formatFriends(updatedFriends);
-
-    res.status(200).json({
-      friends: formattedFriends,
-      friendRequests: user.friendRequests || [],
-    });
   } catch (err) {
-    //404 ???
-    res.status(404).json({ message: err.message });
+    console.error("Error in getPendingRequests", err);
+    res.status(500).json({ message: "Server error:", error: err.message });
   }
-};*/
-//clean the friend requests
-//remove function
+};
+
+export const deleteUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await User.findByIdAndDelete(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
