@@ -14,14 +14,11 @@ const ProfilePage = () => {
   const { userId } = useParams();
   const token = useSelector((state) => state.token);
   const loggedInUser = useSelector((state) => state.user);
-  console.log("loggedInUser", loggedInUser._id); //test
 
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   const isOwnProfile = userId === loggedInUser._id;
 
-  /* Gets User */
   const getUser = async () => {
-    console.log("Test userID", userId); //test
     try {
       const response = await fetch(`http://localhost:3000/user/${userId}`, {
         method: "GET",
@@ -39,7 +36,6 @@ const ProfilePage = () => {
     }
   };
 
-  /* Gets pending friend reequests */
   const getPendingRequests = async () => {
     try {
       const response = await fetch(

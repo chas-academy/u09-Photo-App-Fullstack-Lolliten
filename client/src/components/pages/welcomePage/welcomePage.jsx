@@ -1,32 +1,25 @@
 import { Box, useMediaQuery } from "@mui/material";
 import Navbar from "../../scenes/Navbar"
+import PostWidget from "../../utensils/PostWidget";
+import MyPostWidget from "../../utensils/MyPostWidget";
 
-//import SearchResults from "../../scenes/SearchResults"; 
+//import SearchResults from "../../scenes/SearchResults";  //import in new view not welcome!!
 
-/* Photo-feed of your added friends */
+/* Photo-feed from your added friends */
 
 const WelcomePage = () => {
     //const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
     //const { _id, picturePath } = useSelector((state) => state.user);
 
-/*  <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: 'calc(100vh - 64px)', // Adjust this value based on your Navbar height
-          padding: '2rem',
-        }}
-      >
-        <Typography variant="h5" component="p" align="center">
-          Welcome, this is where you will see your friends' photos!
-        </Typography>
-      </Box>*/
 
     return (
         <Box>
         <Navbar />
+        <Box>
+          <MyPostWidget />
+          <PostWidget />
+          
+        </Box>
         </Box>
     )
 };
@@ -57,3 +50,20 @@ export default WelcomePage;
             </Box>
           )}
         </Box> */
+
+        /*  <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: 'calc(100vh - 64px)', // Adjust this value based on your Navbar height
+          padding: '2rem',
+        }}
+      >
+        <Typography variant="h5" component="p" align="center">
+          Welcome, this is where you will see your friends' photos!
+        </Typography>
+        
+      </Box>
+      */
