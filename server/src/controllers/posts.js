@@ -1,13 +1,14 @@
-
 import Post from "../models/Post.js";
 import User from "../models/User.js";
 
-/* CREATE */ //post is images
 export const createPost = async (req, res) => {
   try {
     const { userId, description, picturePath } = req.body; //what front should send
     const user = await User.findById(userId);
-    const newPost = new ({
+    console.log("user", user); //test
+    console.log("userid", userId); //test
+    console.log("req", req.body); //test
+    const newPost = new Post({
       userId,
       firstName: user.firstName,
       lastName: user.lastName,
@@ -26,7 +27,9 @@ export const createPost = async (req, res) => {
   }
 };
 
-/* READ */
+/* READ 
+connect to endpoint and get the data, when working then filter
+*/
 export const getFeedPosts = async (req, res) => {
   try {
     const post = await Post.find(); //Post model
@@ -50,7 +53,7 @@ export const getUserPosts = async (req, res) => {
 export const likePost = async (req, res) => {
   try {
     const { id } = req.params; //get paramaters id (user) from mongo
-    const { userId } = req.body; //get userId from req
+    const { userId } = req.body; //get userId from req in body
     const post = await Post.findById(id); //grabbing post info
     const isLiked = post.likes.get(userId); //check if the userid exist and the post is liked
 
@@ -61,10 +64,11 @@ export const likePost = async (req, res) => {
       post.likes.set(userId, true); //if non existing set
     }
 
-    const updatedPost = await Post.findByIdAndUpdate( //find and update a specific post
+    const updatedPost = await Post.findByIdAndUpdate(
+      //find and update a specific post
       id,
       { likes: post.likes },
-      { new: true } 
+      { new: true }
     );
 
     res.status(200).json(updatedPost); //update frontend
