@@ -35,13 +35,13 @@ const PostWidget = ({
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch("http://localhost:3000/post", {
+      const response = await fetch("http://localhost:3000/posts", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId: loggedInUserId }),
+        // body: JSON.stringify({ userId: loggedInUserId }),
       });
       const data = await response.json();
       setPostsState(data); // Set the local posts state with the fetched data
