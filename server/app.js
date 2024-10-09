@@ -35,7 +35,8 @@ app.use(
 /* Multer config */ //Is multer needed here?
 const storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
-    cb(null, "public/uploads");  //changed from /uploads --> public/uploads
+    cb(null, "public/uploads");
+
   },
   filename: function (_req, file, cb) {
     cb(null, file.originalname);
@@ -69,6 +70,8 @@ app.post("/post", verifyToken, upload.single("picture"), createPost); //createPo
 /* Get User */
 app.get("/user/:id", async (req, res) => {
   const { id } = req.params;
+  console.log("Received user ID:", id); // test
+
   try {
     const user = await User.findById(id);
 
@@ -82,7 +85,6 @@ app.get("/user/:id", async (req, res) => {
   }
 });
 
-/* Pending friend */
 app.post("/users/:id/friend-request", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;

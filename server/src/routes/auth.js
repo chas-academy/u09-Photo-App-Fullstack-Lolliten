@@ -2,10 +2,10 @@ import express from "express";
 import { login, register } from "../controllers/auth.js";
 import multer from "multer";
 
-/* Multer config */ //Is multer needed here?
+/* Multer config */
 const storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
-    cb(null, "public/uploads");
+    cb(null, "public/uploads/profilepictures");
   },
   filename: function (_req, file, cb) {
     cb(null, file.originalname); //Consider adding info, like < Date,now()+ "-" + > , or other info
