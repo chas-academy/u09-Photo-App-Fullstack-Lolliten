@@ -24,6 +24,10 @@ import {
   import { useState } from "react";
   import { useDispatch, useSelector } from "react-redux";
   import { setPosts } from "../../state/reduxConfig";
+
+  /*
+ manage the state for the uploaded image 
+  */
   
   const MyPostWidget = ({ picturePath }) => {
     const dispatch = useDispatch();
@@ -56,6 +60,11 @@ import {
       setImage(null);
       setPost("");
     };
+
+    /*  const handleImageUpload = (data) => {
+    setImage(data.image); // Assuming the response contains the image data
+
+    <AppFileUploader onUpload={handleImageUpload} /> */
   
     return (
       <WidgetWrapper>
