@@ -11,12 +11,13 @@ const storage = multer.diskStorage({
     cb(null, file.originalname); //Consider adding info, like < Date,now()+ "-" + > , or other info
   },
 });
-const upload = multer({ storage }); //defining upload
+const upload = multer({ storage });
 
 const authRoutes = express.Router();
 
 authRoutes.post("/login", login);
-authRoutes.post("/register", upload.single("picture"), register); // Move ?? Middleware before uploading picture
-authRoutes.get("/profile/:userId"); // should it be a route for only geteting id or for id for profile?
+authRoutes.post("/register", upload.single("picture"), register);
+
+authRoutes.get("/profile/:userId");
 
 export default authRoutes;

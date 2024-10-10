@@ -112,7 +112,11 @@ const Form = () => {
           token: loggedIn.token,
         })
       );
-      navigate(`profile/${loggedIn.user._id}`);
+      if (loggedIn.user.email === "admin@admin.com") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate(`profile/${loggedIn.user._id}`); // Navigate to user profile
+      }
     }
   };
 
