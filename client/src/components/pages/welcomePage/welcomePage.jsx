@@ -2,12 +2,7 @@ import { Box, useMediaQuery } from "@mui/material";
 import Navbar from "../../scenes/Navbar";
 import MyPostWidget from "../../utensils/MyPostWidget";
 import PostsWidget from "../../utensils/PostWidget";
-import { useSelector } from "react-redux";
-
-
-const WelcomePage = () => {
-  const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
-  const { _id, picturePath } = useSelector((state) => state.user);
+//import { useSelector } from "react-redux";
 
 
 const WelcomePage = () => {
