@@ -1,9 +1,10 @@
 import "./App.css";
 import { useState } from "react";
 
-function App() {
-  const [img, setImg] = useState(""); //"" will store the slected image
-  const formdata = new FormData(); //creates a FormData object named formdata that will be used to hold the image data for upload.
+function AppFileUploader({ onUpload }) { // Accept onUpload prop
+  const [img, setImg] = useState("");
+  //creates a FormData object named formdata that will be used to hold the image data for upload.
+  //const formdata = new FormData(); 
 
   const handleImageChange = (event) => {
     const img = event.target.files[0];
@@ -12,37 +13,35 @@ function App() {
       console.error("Please select a valid image file.");
       return;
     }
-    setImg(img); // Update state with selected image
+    setImg(img);
   };
+
   const handleClick = async () => {
     if (!img) {
       console.error("Please select an image before submitting.");
       return;
     }
+    const formdata = new FormData();
     formdata.append("image", img);
     try {
       const response = await fetch("http://localhost:3000/api/upload", {
         method: "POST",
         body: formdata,
       });
-      /*const data = await response.json(); // Get response data (e.g., success message, image URL)
-      console.log(data.msg);*/ // display success message instead
+      const data = await response.json();
+      onUpload(data); // Call the onUpload callback with the response data
     } catch (err) {
       console.error("Error uploading image:", err);
     }
   };
 
-  // append everytime or better way before send form to back then append value in the img state
-
   return (
     <>
       <h1>Upload one image</h1>
-
       <input type="file" onChange={handleImageChange} />
-
       <button type="button" onClick={handleClick}>Submit</button>
     </>
   );
 }
 
-export default App;
+export default AppFileUploader;
