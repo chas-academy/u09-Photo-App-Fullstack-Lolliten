@@ -4,6 +4,7 @@ import LoginPage from "./components/pages/loginPage/loginPage";
 import ProfilePage from "./components/pages/profilePage/profilePage";
 import SearchResults from "./components/scenes/SearchResults";
 import EditProfilePage from "./components/pages/editProfile/EditProfile.jsx";
+import AdminDashboard from"./components/adminDashboard/adminDashboard.jsx";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
@@ -26,6 +27,7 @@ function App() {
             <Route path="/search" element={<SearchResults />} />
             <Route path="/profile/:userId" element={<ProfilePage />} />
             <Route path="/edit-profile/:userId" element={<EditProfilePage />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

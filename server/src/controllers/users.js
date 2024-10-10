@@ -106,7 +106,6 @@ export const getPendingRequests = async (req, res) => {
 
     const user = await User.findById(id, "friendRequests");
     return res.status(200).send(user);
-
   } catch (err) {
     console.error("Error in getPendingRequests", err);
     res.status(500).json({ message: "Server error:", error: err.message });

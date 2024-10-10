@@ -1,7 +1,44 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+//import Post from "../models/Post.js";
 
+export const adminLogin = async (req, res) => {
+  const { email, password } = req.body; //email is undeclared
+
+  // Check if the user is an admin
+  const admin = await User.findOne({ email: "admin@admin.com" });
+  if (!admin) return res.status(404).json({ message: "Admin not found" });
+
+  // Check password
+  const isMatch = await bcrypt.compare(password, admin.password);
+  if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+
+  // Generate token
+  const token = jwt.sign({ id: admin._id, role: admin.role }, "your_jwt_secret", { expiresIn: "1h" });
+  res.status(200).json({ token }); //put in admin here too?
+};
+
+export const deleteUser = async (req,res) => {
+  const { userId } = req.params;
+  try {
+    await User.findByIdAndDelete(userId);
+    await Post.deleteMany({ userId });
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  } 
+}
+
+export const deletePost = async (req, res) => {
+  const { postId } = req.params;
+  try {
+    await Post.findByIdAndDelete(postId);
+    res.status(200).json({ message: "Post deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 export const register = async (req, res) => {
   try {
@@ -37,7 +74,7 @@ export const login = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
     delete user.password;
     res.status(200).json({ token, user });
   } catch (err) {

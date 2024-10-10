@@ -1,9 +1,8 @@
 import { Box, useMediaQuery } from "@mui/material";
 import Navbar from "../../scenes/Navbar";
 import MyPostWidget from "../../utensils/MyPostWidget";
-import PostsWidget from "../../utensils/PostWidget";
-//import { useSelector } from "react-redux";
 
+/* Style return here or in widgets? ? ? */
 
 const WelcomePage = () => {
     //const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
