@@ -8,7 +8,7 @@ It's a social media app where you can create an account too connect with friends
 
 ## Work process
 
-[Setup intructions](process.md)
+[Setup intructions](x-ReadME/process.md)
 
 - ESLint _for linting_
 - Airbnb _as standard_
@@ -34,6 +34,8 @@ It's a social media app where you can create an account too connect with friends
 
 #### User stories and questionaire:
 
-- [UserStories_Questionnaire:](User_and_links.md)
- 
+- [UserStories_Questionnaire:](x-ReadME/User_and_links.md)
+
 ### Screenshots
+
+Of project display here.
