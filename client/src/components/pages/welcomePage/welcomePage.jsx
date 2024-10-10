@@ -3,9 +3,7 @@ import Navbar from "../../scenes/Navbar"
 import PostWidget from "../../utensils/PostWidget";
 import MyPostWidget from "../../utensils/MyPostWidget";
 
-//import SearchResults from "../../scenes/SearchResults";  //import in new view not welcome!!
-
-/* Photo-feed from your added friends */
+/* Style return here or in widgets? ? ? */
 
 const WelcomePage = () => {
     //const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
