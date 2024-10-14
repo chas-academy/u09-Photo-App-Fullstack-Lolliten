@@ -86,7 +86,7 @@ const Form = () => {
   };
 
   const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch(`http://localhost:3000/auth/login`, {
+    const loggedInResponse = await fetch("http://localhost:3000/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
@@ -112,10 +112,12 @@ const Form = () => {
           token: loggedIn.token,
         })
       );
-      if (loggedIn.user.email === "admin@admin.com") {
-        navigate("/admin/dashboard");
+
+      // Redirect based on user role
+      if (loggedIn.user.role === "admin") {
+        navigate("/admin/dashboard"); // Redirect to Admin Dashboard
       } else {
-        navigate(`profile/${loggedIn.user._id}`); // Navigate to user profile
+        navigate(`profile/${loggedIn.user._id}`); // Redirect to User Profile
       }
     }
   };

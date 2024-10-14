@@ -7,9 +7,6 @@ const connectDB = async () => {
   try {
     const mongoURI =
       "mongodb+srv://lolo:Password123@u09-cluster.jn5av.mongodb.net/lolo?retryWrites=true&w=majority&appName=U09-cluster";
-      /*const options = {
-        bufferMaxTimeMS: 60000 // Set the buffer max time to 60 seconds (adjust as needed)
-      };*/
     await connect(mongoURI);
     console.log("MongoDB Connected...");
   } catch (err) {
@@ -20,6 +17,3 @@ const connectDB = async () => {
 };
 
 export default connectDB;
-
-/* Put in .env?
-MONGO_URL="your_mongodb_connection_string"; */
