@@ -24,7 +24,7 @@ authRoutes.get("/profile/:userId");
 
 authRoutes.get("/admin", verifyToken(["admin"]), getAllUser);
 authRoutes.post("/admin", verifyToken(["admin"]), adminLogin);
-authRoutes.delete("/admin/users/:userId", verifyToken(["admin"]), deleteUser);
+authRoutes.delete("/admin/:userId", verifyToken(["admin"]), deleteUser);
 authRoutes.delete("/admin/posts/:userId", verifyToken(["admin"]), deletePost);
 
 export default authRoutes;
