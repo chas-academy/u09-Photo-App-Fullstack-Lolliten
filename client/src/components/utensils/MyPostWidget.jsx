@@ -142,20 +142,14 @@ import {
   
           {isNonMobileScreens ? (
             <>
-              <FlexBetween gap="0.25rem">
-                <GifBoxOutlined sx={{ color: mediumMain }} />
-                <Typography color={mediumMain}>Clip</Typography>
-              </FlexBetween>
+             
   
               <FlexBetween gap="0.25rem">
                 <AttachFileOutlined sx={{ color: mediumMain }} />
                 <Typography color={mediumMain}>Attachment</Typography>
               </FlexBetween>
   
-              <FlexBetween gap="0.25rem">
-                <MicOutlined sx={{ color: mediumMain }} />
-                <Typography color={mediumMain}>Audio</Typography>
-              </FlexBetween>
+              
             </>
           ) : (
             <FlexBetween gap="0.25rem">

@@ -49,21 +49,45 @@ const FriendListWidget = ({
 
   /* Handle accept friend request */
   const handleAccept = async (friendId) => {
-    const response = await fetch(`http://localhost:3000/users/addFriend`, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ friendId, userId: loggedInUserId }),
-    });
-    const data = await response.json();
-    dispatch(setFriends({ friends: [...friends, { _id: friendId }] })); // Add accepted friend
-    dispatch(
-      setFriendRequests({
-        friendRequests: friendRequests.filter((id) => id !== friendId),
-      })
-    );
+    try {
+      const response = await fetch(`http://localhost:3000/users/addFriend`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ friendId, userId: loggedInUserId }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Fetch the updated friends list after accepting the friend request
+      const updatedFriendsResponse = await fetch(
+        `http://localhost:3000/users/${loggedInUserId}/friends`,
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!updatedFriendsResponse.ok) {
+        throw new Error("Failed to fetch updated friends list");
+      }
+
+      const updatedFriendsData = await updatedFriendsResponse.json();
+      dispatch(setFriends({ friends: updatedFriendsData })); // Dispatch the updated friends list
+
+      // Update friend requests
+      dispatch(
+        setFriendRequests({
+          friendRequests: friendRequests.filter((id) => id !== friendId),
+        })
+      );
+    } catch (error) {
+      console.error("Error accepting friend request:", error);
+    }
   };
 
   /* Handle reject friend request */
@@ -105,6 +129,14 @@ const FriendListWidget = ({
   };
   */
 
+  /* dispatch(setFriends({ friends: [...friends, { _id: friendId }] })); // Add accepted friend
+    dispatch(
+      setFriendRequests({
+        friendRequests: friendRequests.filter((id) => id !== friendId),
+      })
+    );
+  }; */
+
   return (
     <WidgetWrapper>
       <Typography
@@ -118,8 +150,17 @@ const FriendListWidget = ({
       <List>
         {/* Display friends */}
         {friends.map((friend) => (
-          <ListItem key={friend._id}>
-            <ListItemText primary={`Friend: ${friend._id}`} />
+          <ListItem key={friend._id} sx={{ display: 'flex', alignItems: 'center' }}>
+            {friend.picturePath && ( // Display picture if available
+              <img
+                src={`http://localhost:3000/public/uploads/profilepictures/${friend.picturePath}`} // Adjust the path as necessary
+                alt={`${friend.firstName} ${friend.lastName}`}
+                style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }} // Style the image
+              />
+            )}
+            <ListItemText 
+              primary={`${friend.firstName} ${friend.lastName}`} // Display first and last name
+            />
             <Button
               onClick={() => handleReject(friend._id)} // Remove friend
               sx={{
