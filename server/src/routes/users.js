@@ -29,13 +29,13 @@ userRoutes.get("/search", verifyToken, async (req, res) => {
   }
 });
 
-userRoutes.get("/:id", verifyToken, getUser);
-userRoutes.get("/:id/friends", verifyToken, getUserFriends);
-userRoutes.get("/:id/pendingRequests", verifyToken, getPendingRequests);
+userRoutes.get("/:id", verifyToken(["admin", "user"]), getUser);
+userRoutes.get("/:id/friends", verifyToken(["admin", "user"]), getUserFriends);
+userRoutes.get("/:id/pendingRequests", verifyToken(["admin", "user"]), getPendingRequests);
 
-userRoutes.patch("/addFriend", verifyToken, addFriend);
-userRoutes.patch("/removeFriend", verifyToken, removeFriend);
+userRoutes.patch("/addFriend", verifyToken(["admin", "user"]), addFriend);
+userRoutes.patch("/removeFriend", verifyToken(["admin", "user"]), removeFriend);
 
-userRoutes.delete("/:id", verifyToken, deleteUser);
+userRoutes.delete("/:id", verifyToken(["admin", "user"]), deleteUser);
 
 export default userRoutes;

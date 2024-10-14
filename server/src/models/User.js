@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const UserSchema = new mongoose.Schema(
     {
@@ -41,10 +42,15 @@ const UserSchema = new mongoose.Schema(
             type: String,
             enum: ["user", "admin"],
             default: "user",
-          },
+        },
         friendRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 }, {timestamps: true}
 );
+
+// Method to compare passwords
+UserSchema.methods.comparePassword = async function (password) {
+    return await bcrypt.compare(password, this.password);
+  };
 
 const User = mongoose.model("User", UserSchema)
 

@@ -17,11 +17,11 @@ const storage = multer.diskStorage({
   const upload = multer({ storage }); //defining upload
 
 /* READ */
-postsRoutes.get("/", verifyToken, getFeedPosts)
-postsRoutes.get("/:userId/posts", verifyToken, getUserPosts)
-postsRoutes.post("/", verifyToken, upload.single("picture"), createPost)
+postsRoutes.get("/", verifyToken(["admin", "user"]), getFeedPosts)
+postsRoutes.get("/:userId/posts", verifyToken(["admin", "user"]), getUserPosts)
+postsRoutes.post("/", verifyToken(["admin", "user"]), upload.single("picture"), createPost)
 
 /* UPDATE */
-postsRoutes.patch("/:id/like", verifyToken, likePost)
+postsRoutes.patch("/:id/like", verifyToken(["admin", "user"]), likePost)
 
 export default postsRoutes;

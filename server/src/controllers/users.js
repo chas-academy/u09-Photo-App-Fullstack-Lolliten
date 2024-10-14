@@ -22,6 +22,17 @@ export const getUser = async (req, res) => {
   }
 };
 
+export const getAllUser = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (err) {
+    console.error("Error in getAllUser:", err);
+
+    res.status(404).json({ message: err.message });
+  }
+};
+
 /* Helper function */
 const formatFriends = (friends) => {
   return friends.map(({ _id, firstName, lastName, picturePath }) => {

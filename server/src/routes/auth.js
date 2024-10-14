@@ -1,6 +1,8 @@
 import express from "express";
-import { login, register } from "../controllers/auth.js";
+import { adminLogin, deleteUser, deletePost, login, register } from "../controllers/auth.js";
+import { getAllUser } from "../controllers/users.js";
 import multer from "multer";
+import { verifyToken } from "../middleware/auth.js";
 
 /* Multer config */
 const storage = multer.diskStorage({
@@ -19,5 +21,10 @@ authRoutes.post("/login", login);
 authRoutes.post("/register", upload.single("picture"), register);
 
 authRoutes.get("/profile/:userId");
+
+authRoutes.get("/admin", verifyToken(["admin"]), getAllUser);
+authRoutes.post("/admin", verifyToken(["admin"]), adminLogin);
+authRoutes.delete("/admin/users/:userId", verifyToken(["admin"]), deleteUser);
+authRoutes.delete("/admin/posts/:userId", verifyToken(["admin"]), deletePost);
 
 export default authRoutes;

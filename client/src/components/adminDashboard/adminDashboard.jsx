@@ -1,33 +1,60 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import { Box, Button, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Snackbar } from "@mui/material";
+import MuiAlert from '@mui/material/Alert';
+import { useSelector } from "react-redux";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const token = useSelector((state) => state.token);
 
   // Fetch users from the backend
   const fetchUsers = async () => {
-    const response = await fetch("http://localhost:3000/users", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming you store the token in localStorage
-      },
-    });
-    const data = await response.json();
-    setUsers(data);
+    try {
+      const response = await fetch("http://localhost:3000/auth/admin", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText);
+      }
+  
+      const data = await response.json();
+      setUsers(data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      setSnackbarMessage("Error fetching users: " + error.message); // Provide feedback
+      setOpenSnackbar(true);
+    }
   };
 
-  // Delete a user
+  // Delete a user as admin 
   const handleDeleteUser = async (userId) => {
-    const response = await fetch(`http://localhost:3000/admin/users/${userId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+    try {
+      const response = await fetch(`http://localhost:3000/auth/admin/${userId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      });
 
-    if (response.ok) {
-      fetchUsers(); // Refresh the user list after deletion
-    } else {
-      console.error("Failed to delete user");
+      if (response.ok) {
+        setSnackbarMessage("User deleted successfully");
+        setOpenSnackbar(true);
+        fetchUsers(); // Refresh the user list after deletion
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText);
+      }
+    } catch (error) {
+      console.error("Failed to delete user:", error);
+      setSnackbarMessage("Failed to delete user: " + error.message); // Provide feedback
+      setOpenSnackbar(true);
     }
   };
 
@@ -35,6 +62,11 @@ const AdminDashboard = () => {
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  // Snackbar close handler
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
   return (
     <Box p={3}>
@@ -71,6 +103,13 @@ const AdminDashboard = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Snackbar for feedback */}
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <MuiAlert onClose={handleCloseSnackbar} severity="info" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </MuiAlert>
+      </Snackbar>
     </Box>
   );
 };
