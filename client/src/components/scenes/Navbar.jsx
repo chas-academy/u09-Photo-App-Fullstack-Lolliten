@@ -70,7 +70,7 @@ const Navbar = () => {
       dispatch(setSearchLoading(true));
 
       const response = await fetch(
-        `http://localhost:3000/search?q=${searchQuery}`, // why defined as a string?
+        `${process.env.REACT_APP_API_URL}/search?q=${searchQuery}`,
         {
           method: "GET",
           headers: {

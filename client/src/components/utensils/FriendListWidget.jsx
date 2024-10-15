@@ -65,7 +65,7 @@ const FriendListWidget = ({
 
       // Fetch the updated friends list after accepting the friend request
       const updatedFriendsResponse = await fetch(
-        `http://localhost:3000/users/${loggedInUserId}/friends`,
+        `${process.env.REACT_APP_API_URL}/users/${loggedInUserId}/friends`,
         {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
@@ -93,7 +93,7 @@ const FriendListWidget = ({
   /* Handle reject friend request */
   const handleReject = async (friendId) => {
     try {
-      const response = await fetch(`http://localhost:3000/users/removeFriend`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/users/removeFriend`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,

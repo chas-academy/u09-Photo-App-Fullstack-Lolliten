@@ -12,7 +12,7 @@ const AdminDashboard = () => {
   // Fetch users from the backend
   const fetchUsers = async () => {
     try {
-      const response = await fetch("http://localhost:3000/auth/admin", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/admin`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -36,7 +36,7 @@ const AdminDashboard = () => {
   // Delete a user as admin 
   const handleDeleteUser = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:3000/auth/admin/${userId}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/admin/${userId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`, 
