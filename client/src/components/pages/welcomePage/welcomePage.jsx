@@ -12,7 +12,7 @@ const WelcomePage = () => {
     const [posts, setPosts] = useState([]);
 
     const fetchPosts = async () => {
-        const response = await fetch(`http://localhost:3000/posts/friends/${_id}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/posts/friends/${_id}`, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,

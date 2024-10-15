@@ -15,7 +15,7 @@ const SearchResults = () => {
   useEffect(() => {
     const fetchSearchResults = async () => {
       const response = await fetch(
-        `http://localhost:3000/users/search?query=${encodeURIComponent(searchQuery)}`,
+        `${process.env.REACT_APP_API_URL}/search?q=${encodeURIComponent(searchQuery)}`,
         {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
@@ -32,7 +32,7 @@ const SearchResults = () => {
 
   const sendFriendRequest = async (friendId) => {
     const response = await fetch(
-      `http://localhost:3000/users/${friendId}/friend-request`,
+      `${process.env.REACT_APP_API_URL}/users/${friendId}/friend-request`,
       {
         method: "POST",
         headers: {

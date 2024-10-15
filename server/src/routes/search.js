@@ -1,9 +1,9 @@
 import express from "express";
 import User from "../models/User.js";
 
-const router = express.Router();
+const searchRoutes = express.Router();
 
-router.get("/", async (req, res) => {
+searchRoutes.get("/", async (req, res) => {
   try {
     const query = req.query.q;
     console.log("SearchQuery:", query); 
@@ -30,6 +30,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-export default router;
+export default searchRoutes;
 
 /* infinite loading ?? */

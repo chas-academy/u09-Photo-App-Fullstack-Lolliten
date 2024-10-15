@@ -21,7 +21,7 @@ const ProfilePage = () => {
 
   const getUser = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/user/${userId}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/user/${userId}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -38,7 +38,7 @@ const ProfilePage = () => {
   };
 
   const fetchUserPosts = async () => {
-    const response = await fetch(`http://localhost:3000/posts/${userId}`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/posts/${userId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -51,7 +51,7 @@ const ProfilePage = () => {
   const getPendingRequests = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/users/${loggedInUser._id}/pendingRequests`,
+        `${process.env.REACT_APP_API_URL}/users/${loggedInUser._id}/pendingRequests`,
         {
           method: "GET",
           headers: {

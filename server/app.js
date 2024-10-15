@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import authRoutes from "./src/routes/auth.js";
 import userRoutes from "./src/routes/users.js";
 import postsRoutes from "./src/routes/posts.js";
+import searchRoutes from "./src/routes/search.js"
 import User from "./src/models/User.js";
 import Post from "./src/models/Post.js";
 import { verifyToken } from "./src/middleware/auth.js";
@@ -49,6 +50,7 @@ const upload = multer({ storage }); //defining upload
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", postsRoutes);
+app.use("/search", searchRoutes);
 
 /* Routes with files */
 app.post("/api/upload", upload.single("image"), async (req, res) => {
