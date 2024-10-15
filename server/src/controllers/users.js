@@ -1,5 +1,19 @@
 import User from "../models/User.js";
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+import multer from 'multer';
+
+// // Set up multer for file uploads
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'uploads/'); // Specify the directory to save the uploaded files
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, Date.now() + '-' + file.originalname); // Append timestamp to the filename
+//   },
+// });
+
+// const upload = multer({ storage });
 
 export const getUser = async (req, res) => {
   try {
@@ -145,5 +159,46 @@ export const deleteUser = async (req, res) => {
   } catch (error) {
     console.error("Error deleting user:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const updateUser = async (req, res) => {
+  console.log("Request Body:", req.body); // Log the body
+  console.log("Uploaded File:", req.file); // Log the uploaded file
+
+  const { id } = req.params;
+  const { firstName, lastName, email, password, oldPassword } = req.body;
+  const picturePath = req.file ? req.file.path : null; // Get the file path if a file was uploaded
+
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update user fields
+    if (firstName) user.firstName = firstName;
+    if (lastName) user.lastName = lastName;
+    if (email) user.email = email;
+    if (password) {
+      const salt = await bcrypt.genSalt();
+      user.password = await bcrypt.hash(password, salt);
+    }
+    if (picturePath) user.picturePath = picturePath; // Update picture path if provided
+
+    // Save the updated user
+    const updatedUser = await user.save();
+
+    if (oldPassword) {
+      const isMatch = await user.comparePassword(oldPassword);
+      if (!isMatch) {
+        return res.status(400).json({ message: "Old password is incorrect" });
+      }
+    }
+
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    console.error("Error updating user:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };

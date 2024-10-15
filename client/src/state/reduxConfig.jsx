@@ -40,6 +40,9 @@ export const authSlice = createSlice({
     setPosts: (state, action) => {
       state.posts = action.payload.posts;
     },
+    addPost: (state, action) => {
+      state.posts = [action.payload, ...state.posts]; // Add new post to the top
+    },
     setPost: (state, action) => {
       //only show current post
       const updatedPosts = state.posts.map((post) => {
@@ -78,6 +81,9 @@ export const authSlice = createSlice({
       state.search.error = action.payload;
       state.search.isLoading = false;
     },
+    setUserProfile: (state, action) => {
+      state.user = { ...state.user, ...action.payload }; // Merge existing user data with new data
+    },
   },
 });
 
@@ -87,12 +93,14 @@ export const {
   setLogout,
   setFriends,
   setPosts,
+  addPost,
   setPost,
   setFriendRequests,
   setSearchQuery,
   setSearchResults,
   setSearchLoading,
   setSearchError,
+  setUserProfile,
 } = authSlice.actions;
 
 export default authSlice.reducer;
