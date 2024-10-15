@@ -1,6 +1,6 @@
-import { Box, useMediaQuery, Button } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Navbar from "../../scenes/Navbar";
 import FriendListWidget from "../../utensils/FriendListWidget";
@@ -10,7 +10,8 @@ import PostWidget from "../../utensils/PostWidget";
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
-  const [pendingRequests, setPendingRequests] = useState([]);
+  const [posts, setPosts] = useState([]); // State for user's posts
+  const [pendingRequests, setPendingRequests] = useState([]); // State for pending requests
   const { userId } = useParams();
   const token = useSelector((state) => state.token);
   const loggedInUser = useSelector((state) => state.user);
@@ -36,6 +37,17 @@ const ProfilePage = () => {
     }
   };
 
+  const fetchUserPosts = async () => {
+    const response = await fetch(`http://localhost:3000/posts/${userId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    setPosts(data); // Set the user's posts
+  };
+
   const getPendingRequests = async () => {
     try {
       const response = await fetch(
@@ -59,7 +71,8 @@ const ProfilePage = () => {
 
   useEffect(() => {
     getUser();
-    getPendingRequests();
+    fetchUserPosts(); // Fetch user's posts when the component mounts
+    getPendingRequests(); // Fetch pending requests
   }, []);
 
   if (!user || userId === undefined) return null;
@@ -81,7 +94,7 @@ const ProfilePage = () => {
             userId={userId}
             isProfile={true}
             loggedInUserId={loggedInUser._id}
-            pendingRequests={pendingRequests}
+            pendingRequests={pendingRequests} // Pass pendingRequests to FriendListWidget
           />
         </Box>
         <Box
@@ -90,7 +103,7 @@ const ProfilePage = () => {
         >
           {isOwnProfile && <MyPostWidget picturePath={user.picturePath} />}
           <Box m="2rem 0" />
-          <PostWidget userId={userId} isProfile />
+          <PostWidget posts={posts} /> {/* Pass user's posts to PostWidget */}
         </Box>
       </Box>
     </Box>
@@ -98,3 +111,7 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
+
+/*
+Line 103 :  <PostWidget userId={userId} isProfile />
+*/

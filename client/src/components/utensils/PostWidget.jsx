@@ -25,6 +25,7 @@ import {
     const [posts, setPostsState] = useState([]);
     const dispatch = useDispatch();
     const token = useSelector((state) => state.token);
+    
     const loggedInUserId = useSelector((state) => state.user?._id);
     const isLiked = Boolean(likes && loggedInUserId && likes[loggedInUserId]);
     const likeCount = likes ? Object.keys(likes).length : 0;
@@ -92,7 +93,7 @@ import {
               height="auto"
               alt="post"
               style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
-              src={`http://localhost:3000/assets/${post.picturePath}`}
+              src={`http://localhost:3000/uploads/posts/${post.picturePath}`}
             />
           )}
           <FlexBetween mt="0.25rem">

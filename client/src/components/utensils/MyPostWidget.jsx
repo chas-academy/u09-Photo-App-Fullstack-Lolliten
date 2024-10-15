@@ -24,6 +24,7 @@ import {
   import { useState } from "react";
   import { useDispatch, useSelector } from "react-redux";
   import { setPosts } from "../../state/reduxConfig";
+  import { addPost } from "../../state/reduxConfig";
 
   /*
  manage the state for the uploaded image 
@@ -55,16 +56,15 @@ import {
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
-      const posts = await response.json();
-      dispatch(setPosts({ posts }));
+      const createdPost = await response.json();
+
+      // Dispatch the new post to the Redux store
+      dispatch(addPost(createdPost)); // Add the new post to the top of the existing posts
+
+      // Reset the input fields
       setImage(null);
       setPost("");
     };
-
-    /*  const handleImageUpload = (data) => {
-    setImage(data.image); // Assuming the response contains the image data
-
-    <AppFileUploader onUpload={handleImageUpload} /> */
   
     return (
       <WidgetWrapper>

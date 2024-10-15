@@ -1,18 +1,19 @@
-import { Box } from "@mui/material";
-import { object } from "yup";
+import { Avatar } from "@mui/material";
 
 const UserImage = ({ image, size = "60px" }) => {
+    const imageUrl = image ? `http://localhost:3000/uploads/profilepictures/${image}` : null; // Construct the image URL
+
     return (
-      <Box width={size} height={size}>
-        <img
-          style={{ objectFit: "cover", borderRadius: "50%" }}
-          width={size}
-          height={size}
-          alt="user"
-          src={`http://localhost:3000/uploads/${image}`}
+        <Avatar
+            alt="user"
+            src={imageUrl}
+            sx={{ width: size, height: size }}
+            onError={(e) => {
+                e.target.onerror = null; // Prevent looping
+                e.target.src = `http://localhost:3000/uploads/profilepictures/${image}`; // Replace with your default image path
+            }}
         />
-      </Box>
     );
-  };
+};
 
 export default UserImage;

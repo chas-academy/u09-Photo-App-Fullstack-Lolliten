@@ -111,6 +111,14 @@ const Navbar = () => {
     fullName = `${user.firstName} ${user.lastName}`;
   }
 
+  const goToHome = () => {
+    if (user) {
+      navigate("/welcome"); // Navigate to WelcomePage if logged in
+    } else {
+      navigate("/login"); // Navigate to login page if not logged in
+    }
+  };
+
   return (
     <FlexBetween padding="1rem 6%" backgroundColor={alt}>
       <FlexBetween gap="1.75rem">
@@ -118,7 +126,7 @@ const Navbar = () => {
           fontWeight="bold"
           fontSize="clamp(1rem, 2rem, 2.25rem)"
           color="primary"
-          onClick={() => navigate("/")}
+          onClick={goToHome}
           sx={{
             "&:hover": {
               color: primaryLight,

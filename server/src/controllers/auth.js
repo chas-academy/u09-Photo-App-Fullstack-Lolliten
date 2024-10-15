@@ -60,8 +60,9 @@ export const register = async (req, res) => {
       password: passwordHash,
       picturePath,
       friends,
-      role,
+      role: "user", // Default role
     });
+
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
   } catch (err) {
