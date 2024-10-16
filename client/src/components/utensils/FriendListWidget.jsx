@@ -33,7 +33,7 @@ const FriendListWidget = ({
         return null;
       }
       const response = await fetch(
-        `http://localhost:3000/users/${userId}/friends`,
+        `${import.meta.env.VITE_API_URL}users/${userId}/friends`,
         {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
@@ -50,7 +50,7 @@ const FriendListWidget = ({
   /* Handle accept friend request */
   const handleAccept = async (friendId) => {
     try {
-      const response = await fetch(`http://localhost:3000/users/addFriend`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}friends/accept-friend`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -65,7 +65,7 @@ const FriendListWidget = ({
 
       // Fetch the updated friends list after accepting the friend request
       const updatedFriendsResponse = await fetch(
-        `${process.env.REACT_APP_API_URL}/users/${loggedInUserId}/friends`,
+        `${import.meta.env.VITE_API_URL}users/${loggedInUserId}/friends`,
         {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
@@ -82,7 +82,7 @@ const FriendListWidget = ({
       // Update friend requests
       dispatch(
         setFriendRequests({
-          friendRequests: friendRequests.filter((id) => id !== friendId),
+          friendRequests: friendRequests.filter((id) => id !== friendId), //Removes accepted friendrequest
         })
       );
     } catch (error) {
@@ -93,7 +93,7 @@ const FriendListWidget = ({
   /* Handle reject friend request */
   const handleReject = async (friendId) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/users/removeFriend`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}friends/reject-friend`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -121,6 +121,8 @@ const FriendListWidget = ({
 
   // Remove duplicate friend requests
   const uniqueFriendRequests = [...new Set(friendRequests)];
+  console.log("friendid", uniqueFriendRequests) //test
+  console.log("friend", friendRequests)
 
   /* 
   // Capitalize the first letter of the name
@@ -176,6 +178,7 @@ const FriendListWidget = ({
           </ListItem>
         ))}
         {/* Display pending friend requests */}
+        {/* if fried id is null then dont render friend request, change map abit*/}
         {uniqueFriendRequests.map((friendId) => (
           <ListItem key={friendId}>
             <ListItemText primary={`Friend request from user ${friendId}`} />

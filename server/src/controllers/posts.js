@@ -27,9 +27,7 @@ export const createPost = async (req, res) => {
   }
 };
 
-/* READ 
-connect to endpoint and get the data, when working then filter
-*/
+/* READ */
 export const getFeedPosts = async (req, res) => {
   try {
     const posts = await Post.find(); //(Post model)

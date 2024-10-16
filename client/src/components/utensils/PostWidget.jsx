@@ -36,7 +36,7 @@ import {
 
     const fetchPosts = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/posts`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}posts`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -59,7 +59,7 @@ import {
     // /* Likes on posts */
     // const patchLike = async () => {
     //   if (!postId || !loggedInUserId) return; // Guard clause
-    //   const response = await fetch(`http://localhost:3000/posts/${postId}/like`, {
+    //   const response = await fetch(`${import.meta.env.VITE_API_URL}posts/${postId}/like`, {
     //     method: "PATCH",
     //     headers: {
     //       Authorization: `Bearer ${token}`,
