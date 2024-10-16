@@ -138,15 +138,32 @@ export const removeFriend = async (req, res) => {
 
 export const getPendingRequests = async (req, res) => {
   try {
-    const { id } = req.params;
+    //rename: id = userId
+    //userId = friendId
+    const { userId, friendId } = req.body;
 
-    const user = await User.findById(id, "friendRequests");
-    return res.status(200).send(user);
+    const friend = await User.findById(friendId);
+
+    if (!friend.friendRequests.includes(userId)) {
+      friend.friendRequests.push(userId);
+      await friend.save();
+    }
+
+    res.status(200).json(friend.friendRequests);
   } catch (err) {
-    console.error("Error in getPendingRequests", err);
-    res.status(500).json({ message: "Server error:", error: err.message });
+    res.status(404).json({ message: err.message });
   }
 };
+//   try {
+//     const { id } = req.params;
+
+//     const user = await User.findById(id, "friendRequests");
+//     return res.status(200).send(user);
+//   } catch (err) {
+//     console.error("Error in getPendingRequests", err);
+//     res.status(500).json({ message: "Server error:", error: err.message });
+//   }
+// };
 
 export const deleteUser = async (req, res) => {
   const { id } = req.params;

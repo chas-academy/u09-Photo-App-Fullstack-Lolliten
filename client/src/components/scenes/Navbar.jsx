@@ -70,7 +70,7 @@ const Navbar = () => {
       dispatch(setSearchLoading(true));
 
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/search?q=${searchQuery}`,
+        `${import.meta.env.VITE_API_URL}search?q=${searchQuery}`,
         {
           method: "GET",
           headers: {

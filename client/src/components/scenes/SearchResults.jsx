@@ -15,7 +15,7 @@ const SearchResults = () => {
   useEffect(() => {
     const fetchSearchResults = async () => {
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/search?q=${encodeURIComponent(searchQuery)}`,
+        `${import.meta.env.VITE_API_URL}search?q=${encodeURIComponent(searchQuery)}`,
         {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
@@ -32,14 +32,14 @@ const SearchResults = () => {
 
   const sendFriendRequest = async (friendId) => {
     const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/users/${friendId}/friend-request`,
+      `${import.meta.env.VITE_API_URL}friends/friend-request`,
       {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId: loggedInUserId }),
+        body: JSON.stringify({ userId: loggedInUserId, friendId: friendId }),
       }
     );
     const data = await response.json();
@@ -58,7 +58,7 @@ const SearchResults = () => {
           {searchResults.map((user) => (
             <ListItem key={user._id}>
                <ListItemAvatar>
-                <Avatar src= {`http://localhost:3000/uploads/${user.picturePath}`} />
+                <Avatar src= {`${import.meta.env.VITE_API_URL}uploads/${user.picturePath}`} />
               </ListItemAvatar>              
               <ListItemText 
                 primary={`${user.firstName} ${user.lastName}`}
