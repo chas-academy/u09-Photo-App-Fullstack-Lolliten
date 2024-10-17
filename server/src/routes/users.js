@@ -5,7 +5,6 @@ import {
   getUserFriends,
   addFriend,
   removeFriend,
-  getPendingRequests,
   deleteUser,
   updateUser,
 } from "../controllers/users.js";
@@ -14,16 +13,17 @@ import User from "../models/User.js";
 
 const userRoutes = express.Router();
 
-/* Multer config */ //Is multer needed here?
+/* Multer config */
 const storage = multer.diskStorage({
   destination: function (_req, _file, cb) {
     cb(null, "public/uploads/profilepictures");
   },
   filename: function (_req, file, cb) {
-    cb(null, file.originalname); //Consider adding info, like < Date,now()+ "-" + > , or other info
+    cb(null, file.originalname);
+    //Consider adding info, like < Date,now()+ "-" + > , or other info
   },
 });
-const upload = multer({ storage }); //defining upload
+const upload = multer({ storage });
 
 userRoutes.get("/search", verifyToken, async (req, res) => {
   try {
@@ -44,14 +44,14 @@ userRoutes.get("/search", verifyToken, async (req, res) => {
 
 userRoutes.get("/:id", verifyToken(["admin", "user"]), getUser);
 userRoutes.get("/:id/friends", verifyToken(["admin", "user"]), getUserFriends);
-userRoutes.get("/:id/pendingRequests", verifyToken(["admin", "user"]), getPendingRequests);
+// userRoutes.post("/pendingRequests", verifyToken(["admin", "user"])); //getPendingRequests
+//I removed /:id from the route since userId and friendId is sent in body
 
 userRoutes.patch("/addFriend", verifyToken(["admin", "user"]), addFriend);
 userRoutes.patch("/removeFriend", verifyToken(["admin", "user"]), removeFriend);
 
 userRoutes.delete("/:id", verifyToken(["admin", "user"]), deleteUser);
 
-userRoutes.put("/:id", upload.single('picturePath'), updateUser);
-//userRoutes.put("/:id", verifyToken(["admin", "user"]), updateUser);
+userRoutes.put("/:id", upload.single("picturePath"), updateUser);
 
 export default userRoutes;

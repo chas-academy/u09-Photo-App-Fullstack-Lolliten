@@ -6,10 +6,6 @@ const searchRoutes = express.Router();
 searchRoutes.get("/", async (req, res) => {
   try {
     const query = req.query.q;
-    console.log("SearchQuery:", query); 
-
-    /* const { query } = req.body;
-    console.log("SearchQuery:", req.query.q) */
 
     /* Find all users where either the username OR the 
         email matches the given query, ignoring case */
@@ -31,5 +27,3 @@ searchRoutes.get("/", async (req, res) => {
 });
 
 export default searchRoutes;
-
-/* infinite loading ?? */

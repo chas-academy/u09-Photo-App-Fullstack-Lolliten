@@ -14,6 +14,7 @@ const initialState = {
     isLoading: false,
     error: null,
   },
+  sentRequests: new Set(), // Add this line
 };
 
 export const authSlice = createSlice({
@@ -84,6 +85,9 @@ export const authSlice = createSlice({
     setUserProfile: (state, action) => {
       state.user = { ...state.user, ...action.payload }; // Merge existing user data with new data
     },
+    setSentRequests: (state, action) => {
+      state.sentRequests = new Set(action.payload); // Update sentRequests
+    },
   },
 });
 
@@ -101,6 +105,7 @@ export const {
   setSearchLoading,
   setSearchError,
   setUserProfile,
+  setSentRequests,
 } = authSlice.actions;
 
 export default authSlice.reducer;

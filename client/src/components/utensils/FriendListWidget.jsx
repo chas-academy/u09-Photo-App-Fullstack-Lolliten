@@ -1,5 +1,4 @@
 import {
-  Box,
   Typography,
   useTheme,
   Button,
@@ -12,11 +11,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setFriends, setFriendRequests } from "../../state/reduxConfig";
 
-const FriendListWidget = ({
-  userId,
-  // isProfile,
-  loggedInUserId,
-}) => {
+const FriendListWidget = ({ userId, loggedInUserId }) => {
   const dispatch = useDispatch();
   const { palette } = useTheme();
   const token = useSelector((state) => state.token);
@@ -24,9 +19,6 @@ const FriendListWidget = ({
     useSelector((state) => state.user.friendRequests) || [];
   const friends = useSelector((state) => state.user.friends) || []; // Get friends from state
 
-  // const isOwnProfile = loggedInUserId === userId;
-
-  /* Get friend list */
   const getFriends = async () => {
     try {
       if (userId === undefined) {
@@ -47,22 +39,23 @@ const FriendListWidget = ({
     }
   };
 
-  /* Handle accept friend request */
   const handleAccept = async (friendId) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}friends/accept-friend`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ friendId, userId: loggedInUserId }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}friends/accept-friend`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ friendId, userId: loggedInUserId }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
       // Fetch the updated friends list after accepting the friend request
       const updatedFriendsResponse = await fetch(
         `${import.meta.env.VITE_API_URL}users/${loggedInUserId}/friends`,
@@ -71,11 +64,9 @@ const FriendListWidget = ({
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
       if (!updatedFriendsResponse.ok) {
         throw new Error("Failed to fetch updated friends list");
       }
-
       const updatedFriendsData = await updatedFriendsResponse.json();
       dispatch(setFriends({ friends: updatedFriendsData })); // Dispatch the updated friends list
 
@@ -90,17 +81,19 @@ const FriendListWidget = ({
     }
   };
 
-  /* Handle reject friend request */
   const handleReject = async (friendId) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}friends/reject-friend`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId: loggedInUserId, friendId }), // Send both userId and friendId
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}friends/reject-friend`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId: loggedInUserId, friendId }), // Send both userId and friendId
+        }
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -117,19 +110,10 @@ const FriendListWidget = ({
 
   useEffect(() => {
     getFriends();
-  }, [userId]);
+  }, []); //re-render when new userId
 
   // Remove duplicate friend requests
   const uniqueFriendRequests = [...new Set(friendRequests)];
-  console.log("friendid", uniqueFriendRequests) //test
-  console.log("friend", friendRequests)
-
-  /* 
-  // Capitalize the first letter of the name
-  const capitalizeFirstLetter = (name) => {
-    return name.charAt(0).toUpperCase() + name.slice(1);
-  };
-  */
 
   /* dispatch(setFriends({ friends: [...friends, { _id: friendId }] })); // Add accepted friend
     dispatch(
@@ -152,19 +136,27 @@ const FriendListWidget = ({
       <List>
         {/* Display friends */}
         {friends.map((friend) => (
-          <ListItem key={friend._id} sx={{ display: 'flex', alignItems: 'center' }}>
+          <ListItem
+            key={friend._id}
+            sx={{ display: "flex", alignItems: "center" }}
+          >
             {friend.picturePath && ( // Display picture if available
               <img
-                src={`http://localhost:3000/public/uploads/profilepictures/${friend.picturePath}`} // Adjust the path as necessary
+                src={`${
+                  import.meta.env.VITE_API_URL
+                }public/uploads/profilepictures/${friend.picturePath}`}
                 alt={`${friend.firstName} ${friend.lastName}`}
-                style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }} // Style the image
+                style={{
+                  width: "50px",
+                  height: "50px",
+                  borderRadius: "50%",
+                  marginRight: "10px",
+                }} // Style the image
               />
             )}
-            <ListItemText 
-              primary={`${friend.firstName} ${friend.lastName}`} // Display first and last name
-            />
+            <ListItemText primary={`${friend.firstName} ${friend.lastName}`} />
             <Button
-              onClick={() => handleReject(friend._id)} // Remove friend
+              onClick={() => handleReject(friend._id)}
               sx={{
                 m: "0.5rem 0",
                 p: "1rem",
@@ -178,46 +170,52 @@ const FriendListWidget = ({
           </ListItem>
         ))}
         {/* Display pending friend requests */}
-        {/* if fried id is null then dont render friend request, change map abit*/}
-        {uniqueFriendRequests.map((friendId) => (
-          <ListItem key={friendId}>
-            <ListItemText primary={`Friend request from user ${friendId}`} />
-            <Button
-              onClick={() => handleAccept(friendId)}
-              sx={{
-                m: "0.5rem 0",
-                p: "1rem",
-                backgroundColor: palette.primary.main,
-                color: palette.background.alt,
-                "&:hover": { color: palette.primary.main },
-                "&:disabled": {
-                  backgroundColor: palette.neutral.light,
-                  color: palette.neutral.main,
-                },
-              }}
-            >
-              Accept
-            </Button>
-            <Button
-              onClick={() => handleReject(friendId)}
-              sx={{
-                m: "0.5rem 0",
-                p: "1rem",
-                backgroundColor: palette.primary.main,
-                color: palette.background.alt,
-                "&:hover": { color: palette.primary.main },
-                "&:disabled": {
-                  backgroundColor: palette.neutral.light,
-                  color: palette.neutral.main,
-                },
-              }}
-            >
-              Reject
-            </Button>
-          </ListItem>
-        ))}
+        {uniqueFriendRequests.map(
+          (friend) =>
+            friend && ( // changed to map friend not friendId, and key from friendId
+              <ListItem key={friend}>
+                <ListItemText
+                  primary={`Friend request from ${
+                    (friend.firstName, friend.lastName)
+                  }`}
+                />
+                <Button
+                  onClick={() => handleAccept(friend)}
+                  sx={{
+                    m: "0.5rem 0",
+                    p: "1rem",
+                    backgroundColor: palette.primary.main,
+                    color: palette.background.alt,
+                    "&:hover": { color: palette.primary.main },
+                    "&:disabled": {
+                      backgroundColor: palette.neutral.light,
+                      color: palette.neutral.main,
+                    },
+                  }}
+                >
+                  Accept
+                </Button>
+                <Button
+                  onClick={() => handleReject(friend)}
+                  sx={{
+                    m: "0.5rem 0",
+                    p: "1rem",
+                    backgroundColor: palette.primary.main,
+                    color: palette.background.alt,
+                    "&:hover": { color: palette.primary.main },
+                    "&:disabled": {
+                      backgroundColor: palette.neutral.light,
+                      color: palette.neutral.main,
+                    },
+                  }}
+                >
+                  Reject
+                </Button>
+              </ListItem>
+            )
+        )}
         {friends.length === 0 && friendRequests.length === 0 && (
-          <Typography>No friends to display.</Typography> // Display message if no friends or requests
+          <Typography>No friends to display.</Typography>
         )}
       </List>
     </WidgetWrapper>
@@ -225,3 +223,10 @@ const FriendListWidget = ({
 };
 
 export default FriendListWidget;
+
+/*
+{uniqueFriendRequests
+  .filter(friendId => friendId) // Filter out null or undefined friendIds
+  .map((friendId) => (
+    <ListItem key={friendId}>
+*/
