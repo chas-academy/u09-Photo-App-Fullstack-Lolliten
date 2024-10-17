@@ -11,7 +11,6 @@ import PostWidget from "../../utensils/PostWidget";
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]); // State for user's posts
-  const [pendingRequests, setPendingRequests] = useState([]); // State for pending requests
   const { userId } = useParams();
   const token = useSelector((state) => state.token);
   const loggedInUser = useSelector((state) => state.user);
@@ -21,37 +20,8 @@ const ProfilePage = () => {
 
   const getUser = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}user/${userId}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setUser(data);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-    }
-  };
-
-  const fetchUserPosts = async () => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}posts/${userId}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    setPosts(data); // Set the user's posts
-  };
-
-  const getPendingRequests = async () => {
-    try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}users/${loggedInUser._id}/pendingRequests`,
+        `${import.meta.env.VITE_API_URL}user/${userId}`,
         {
           method: "GET",
           headers: {
@@ -63,16 +33,54 @@ const ProfilePage = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      setPendingRequests(data);
+      setUser(data);
     } catch (error) {
-      console.error("Error fetching pending requests:", error);
+      console.error("Error fetching user:", error);
     }
   };
+
+  const fetchUserPosts = async () => {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}posts/${userId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const data = await response.json();
+    setPosts(data); // Set the user's posts
+  };
+
+  // const getPendingRequests = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       //removed ${loggedInUser._id} from the fetch
+  //       `${import.meta.env.VITE_API_URL}users/pendingRequests`, 
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           "Content-Type": "application/json"
+  //         },
+  //         // body: JSON.stringify({ userId: loggedInUser._id }), // Send userId in body
+  //       }
+  //     );
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+  //     const data = await response.json();
+  //     setPendingRequests(data);
+  //   } catch (error) {
+  //     console.error("Error fetching pending requests:", error);
+  //   }
+  // };
 
   useEffect(() => {
     getUser();
     fetchUserPosts(); // Fetch user's posts when the component mounts
-    getPendingRequests(); // Fetch pending requests
+     // Fetch pending requests //getPendingRequests(); // return: pendingRequests={pendingRequests} // Pass pendingRequests to FriendListWidget
   }, []);
 
   if (!user || userId === undefined) return null;
@@ -94,7 +102,6 @@ const ProfilePage = () => {
             userId={userId}
             isProfile={true}
             loggedInUserId={loggedInUser._id}
-            pendingRequests={pendingRequests} // Pass pendingRequests to FriendListWidget
           />
         </Box>
         <Box

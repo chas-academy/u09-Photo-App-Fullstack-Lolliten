@@ -31,20 +31,30 @@ const SearchResults = () => {
   }, [searchQuery, token]);
 
   const sendFriendRequest = async (friendId) => {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}friends/friend-request`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId: loggedInUserId, friendId: friendId }),
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}friends/friend-request`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId: loggedInUserId, friendId }),
+        }
+      );
+      const data = await response.json();
+
+      if (response.ok) {
+        // Update UI to show pending request with name
+        setSentRequests((prev) => new Set(prev).add(friendId));
+      } else {
+        console.error(data.message);
+        alert(data.message);
       }
-    );
-    const data = await response.json();
-    // Update UI to show pending request
-    setSentRequests((prev) => new Set(prev).add(friendId)); // Add to sent requests
+    } catch (error) {
+      console.error("Error sending friend request:", error);
+    }
   };
 
   return (

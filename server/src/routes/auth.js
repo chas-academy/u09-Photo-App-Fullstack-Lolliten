@@ -10,7 +10,8 @@ const storage = multer.diskStorage({
     cb(null, "public/uploads/profilepictures");
   },
   filename: function (_req, file, cb) {
-    cb(null, file.originalname); //Consider adding info, like < Date,now()+ "-" + > , or other info
+    cb(null, file.originalname); 
+    //Consider adding info, like < Date,now()+ "-" + > , or other info
   },
 });
 const upload = multer({ storage });
@@ -25,6 +26,7 @@ authRoutes.get("/profile/:userId");
 authRoutes.get("/admin", verifyToken(["admin"]), getAllUser);
 authRoutes.post("/admin", verifyToken(["admin"]), adminLogin);
 authRoutes.delete("/admin/:userId", verifyToken(["admin"]), deleteUser);
-authRoutes.delete("/admin/posts/:userId", verifyToken(["admin"]), deletePost);
+authRoutes.delete("/admin/posts/:userId", verifyToken(["admin"]), deletePost); 
+//only delete user, not posts??comment out??
 
 export default authRoutes;

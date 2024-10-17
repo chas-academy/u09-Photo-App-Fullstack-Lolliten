@@ -29,18 +29,6 @@ const loginSchema = yup.object().shape({
   password: yup.string().required("required"),
 });
 
-// const initialValuesRegister = {
-//   firstName: "",
-//   lastName: "",
-//   email: "",
-//   picture: "",
-// };
-
-// const initialValuesLogin = {
-//   email: "",
-//   password: "",
-// };
-
 const Form = () => {
   const [pageType, setPageType] = useState("login");
   const [initialValuesRegister, setInitialValuesRegister] = useState({
@@ -85,7 +73,6 @@ const Form = () => {
   };
 
   const login = async (values, onSubmitProps) => {
-    console.log("Login Values:", values); // Log the values being sent
     const loggedInResponse = await fetch(
       `${import.meta.env.VITE_API_URL}auth/login`,
       {
@@ -94,11 +81,7 @@ const Form = () => {
         body: JSON.stringify(values),
       }
     );
-
     const loggedIn = await loggedInResponse.json();
-
-    console.log("Response Status:", loggedInResponse.status); // Log the response status
-    console.log("Response Body:", loggedIn); // Log the response body
 
     if (loggedInResponse.status === 400) {
       console.error("Login failed:", loggedInResponse.status);

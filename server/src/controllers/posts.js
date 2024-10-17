@@ -5,9 +5,7 @@ export const createPost = async (req, res) => {
   try {
     const { userId, description, picturePath } = req.body; //what front should send
     const user = await User.findById(userId);
-    console.log("user", user); //test
-    console.log("userid", userId); //test
-    console.log("req", req.body); //test
+  
     const newPost = new Post({
       userId,
       firstName: user.firstName,

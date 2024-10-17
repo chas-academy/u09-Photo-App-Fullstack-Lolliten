@@ -33,7 +33,7 @@ const EditProfilePage = () => {
 
   useEffect(() => {
     const getUser = async () => {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/users/${userId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}users/${userId}`, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -70,7 +70,7 @@ const EditProfilePage = () => {
       }
     }
 
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/users/${userId}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}users/${userId}`, {
       method: "PUT",
       headers: { Authorization: `Bearer ${token}` },
       body: formData,
@@ -88,7 +88,7 @@ const EditProfilePage = () => {
   };
 
   const handleDeleteAccount = async () => {
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/users/${userId}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}users/${userId}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });

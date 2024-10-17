@@ -1,7 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
-//import Post from "../models/Post.js";
 
 export const adminLogin = async (req, res) => {
   const { email, password } = req.body; //email is undeclared

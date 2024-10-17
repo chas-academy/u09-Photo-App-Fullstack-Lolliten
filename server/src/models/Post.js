@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 /* Based on the ER-diagram */
-
 const postSchema = new mongoose.Schema(
   {
     userId: {
@@ -10,7 +9,7 @@ const postSchema = new mongoose.Schema(
     },
     description: String,
     picturePath: String,
-    userPicturePath: String, //profile pic
+    userPicturePath: String,
     likes: {
       //likes stored as a object with ref who liked it, like boolean,
       type: Map,
