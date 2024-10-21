@@ -72,16 +72,22 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
       const updatedFriendsData = await updatedFriendsResponse.json();
       dispatch(setFriends({ friends: updatedFriendsData })); // Dispatch the updated friends list
 
-      // DONT WORK CORRECT
       // Update friend requests
       dispatch(
-        setFriendRequests({ 
-          friendRequests: friendRequests.filter((id) => id !== friendId), //Removes accepted friendrequest
+        setFriendRequests({
+          friendRequests: friendRequests.filter((request) => request._id !== friendId), // Remove accepted friend request
         })
       );
-      // DONT WORK CORRECT
+      // setFriendRequests({ 
+      //   friendRequests: friendRequests.filter((id) => id !== friendId), //Removes accepted friendrequest
+
       // Remove the accepted friend from sentRequests
       dispatch(
+        // dispatch(
+        //   setSentRequests({
+        //     sentRequests: sentRequests.filter((id) => id.toString() !== friendId.toString()), // Ensure type consistency
+        //   })
+        // );
         setSentRequests({
           sentRequests: sentRequests.filter((id) => id !== friendId), // Remove from sentRequests
         })
@@ -231,7 +237,7 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
                   Accept
                 </Button>
                 <Button
-                  onClick={() => handleReject(friend)}
+                  onClick={() => handleReject(friend._id)}
                   sx={{
                     m: "0.5rem 0",
                     p: "1rem",
