@@ -70,27 +70,33 @@ export const addFriend = async (req, res) => {
     if (!user || !friend) {
       return res.status(404).json({ message: "User or friend not found" });
     }
+
     if (!user.friends.includes(friendId)) {
       user.friends.push(friendId);
       friend.friends.push(userId);
 
-      console.log(friend.sentRequests) //TEST
-
-      console.log("original friendrequest", user.friendRequests) //TEST
-      console.log("filter friendrequest", user.friendRequests.filter(friendRequest => friendRequest._id !== friendId)) //TEST
+      // Remove the friend request from the user's friendRequests
+      user.friendRequests = user.friendRequests.filter(
+        (request) => request._id.toString() !== friendId // Ensure to convert to string for comparison
+      );
+      // console.log("original friendrequest", user.friendRequests) //TEST
+      // console.log("filter friendrequest", user.friendRequests.filter(friendRequest => friendRequest._id !== friendId)) //TEST
       
-      user.friendRequests = user.friendRequests.filter(friendRequest => friendRequest._id !== friendId) //NOT CORRECT FILTER
+      // user.friendRequests = user.friendRequests.filter(friendRequest => friendRequest._id !== friendId) //NOT CORRECT FILTER
 
-      console.log("friendid:", friendId) //TEST
-      console.log("userId:", userId) //TEST
-     
+      // console.log("friendid:", friendId) //TEST
+      // console.log("userId:", userId) //TEST
+
+      // Remove the user from the friend's sentRequests
       const index = friend.sentRequests.indexOf(userId);
       if (index > -1) {
         friend.sentRequests.splice(index, 1);
       }
     }
+
     await user.save();
     await friend.save();
+
     const friends = await Promise.all(
       user.friends.map((id) => User.findById(id))
     );
