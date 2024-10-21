@@ -14,7 +14,7 @@ const initialState = {
     isLoading: false,
     error: null,
   },
-   sentRequests: [], // or new Set() 
+   sentRequests: [],
 };
 
 export const authSlice = createSlice({

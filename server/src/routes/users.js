@@ -3,8 +3,6 @@ import multer from "multer";
 import {
   getUser,
   getUserFriends,
-  addFriend,
-  removeFriend,
   deleteUser,
   updateUser,
 } from "../controllers/users.js";
@@ -44,9 +42,6 @@ userRoutes.get("/search", verifyToken, async (req, res) => {
 
 userRoutes.get("/:id", verifyToken(["admin", "user"]), getUser);
 userRoutes.get("/:id/friends", verifyToken(["admin", "user"]), getUserFriends);
-
-// userRoutes.patch("/addFriend", verifyToken(["admin", "user"]), addFriend);
-// userRoutes.patch("/removeFriend", verifyToken(["admin", "user"]), removeFriend);
 
 userRoutes.delete("/:id", verifyToken(["admin", "user"]), deleteUser);
 

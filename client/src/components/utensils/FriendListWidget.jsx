@@ -57,7 +57,6 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
       // Fetch the updated friends list after accepting the friend request
       const updatedFriendsResponse = await fetch(
         `${import.meta.env.VITE_API_URL}users/${loggedInUserId}/friends`,
@@ -103,6 +102,7 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
           body: JSON.stringify({ userId: loggedInUserId, friendId }), // Send both userId and friendId
         }
       );
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -147,10 +147,17 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
 
   useEffect(() => {
     getFriends();
+
   }, []); //re-render when new userId or dispatch ???
 
   // Remove duplicate friend requests
   const uniqueFriendRequests = [...new Set(friendRequests)]; // DONT WORK CORRECT
+
+  }, []); //re-render when new userId
+
+  // Remove duplicate friend requests
+  const uniqueFriendRequests = [...new Set(friendRequests)];
+
 
 
   return (
@@ -181,6 +188,7 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
                   height: "50px",
                   borderRadius: "50%",
                   marginRight: "10px",
+                }}
                 }}
               />
             )}

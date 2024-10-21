@@ -70,7 +70,6 @@ export const addFriend = async (req, res) => {
     if (!user || !friend) {
       return res.status(404).json({ message: "User or friend not found" });
     }
-
     if (!user.friends.includes(friendId)) {
       user.friends.push(friendId);
       friend.friends.push(userId);
@@ -85,10 +84,8 @@ export const addFriend = async (req, res) => {
         friend.sentRequests.splice(index, 1);
       }
     }
-
     await user.save();
     await friend.save();
-
     const friends = await Promise.all(
       user.friends.map((id) => User.findById(id))
     );
@@ -112,6 +109,7 @@ export const removeFriend = async (req, res) => {
     user.friends = user.friends.filter((id) => id.toString() !== friendId);
     // Remove userId from friend's friend list
     friend.friends = friend.friends.filter((id) => id.toString() !== userId);
+
     await user.save();
     await friend.save();
     res.status(200).json({ message: "Friend removed successfully" });
@@ -132,11 +130,6 @@ export const rejectFriend = async (req, res) => {
       return res.status(404).json({ message: "User or friend not found" });
     }
 
-    // Remove the friendId from the user's friendRequests
-    // user.friendRequests = user.friendRequests.filter(
-    //   (request) => request._id.toString() !== friendId
-    // );
-
          // Remove the friend request from the user's friendRequests
          user.friendRequests = user.friendRequests.filter(
           (request) => request._id.toString() !== friendId // Ensure to convert to string for comparison
@@ -147,15 +140,11 @@ export const rejectFriend = async (req, res) => {
           friend.sentRequests.splice(index, 1);
         }
 
-    // Optionally, remove the userId from the friend's sentRequests
-    // friend.sentRequests = friend.sentRequests.filter(
-    //   (request) => request.toString() !== userId
-    // );
-
     await user.save();
     await friend.save();
 
     res.status(200).json({ message: "Friend request rejected successfully" });
+
   } catch (err) {
     console.error("Error rejecting friend request:", err);
     res.status(500).json({ message: err.message });
@@ -192,7 +181,8 @@ export const friendRequests = async (req, res) => {
       await friend.save();
     }
 
-    res.status(200).json(friend.friendRequests); // CORRECT ???
+    res.status(200).json(friend.friendRequests);
+
   } catch (err) {
     res.status(500).json({ message: err.message });
     // Changed to 500 for server errors
