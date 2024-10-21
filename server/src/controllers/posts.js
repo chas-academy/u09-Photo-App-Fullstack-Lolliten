@@ -28,9 +28,9 @@ export const createPost = async (req, res) => {
 /* READ */
 export const getFeedPosts = async (req, res) => {
   try {
-    const posts = await Post.find(); //(Post model)
-    // .select("firstName", "lastName", "description", "picturePath", "userId") // Specify the fields to include
-    //   .populate("userId", "firstName", "lastName", "picturePath"); // Populate user details if needed
+    const posts = await Post.find()
+    .populate('userId', 'firstName lastName userPicturePath') // Populate user details
+    .exec()
 
     res.status(200).json(posts);
   } catch (err) {
