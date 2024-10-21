@@ -44,11 +44,9 @@ userRoutes.get("/search", verifyToken, async (req, res) => {
 
 userRoutes.get("/:id", verifyToken(["admin", "user"]), getUser);
 userRoutes.get("/:id/friends", verifyToken(["admin", "user"]), getUserFriends);
-// userRoutes.post("/pendingRequests", verifyToken(["admin", "user"])); //getPendingRequests
-//I removed /:id from the route since userId and friendId is sent in body
 
-userRoutes.patch("/addFriend", verifyToken(["admin", "user"]), addFriend);
-userRoutes.patch("/removeFriend", verifyToken(["admin", "user"]), removeFriend);
+// userRoutes.patch("/addFriend", verifyToken(["admin", "user"]), addFriend);
+// userRoutes.patch("/removeFriend", verifyToken(["admin", "user"]), removeFriend);
 
 userRoutes.delete("/:id", verifyToken(["admin", "user"]), deleteUser);
 

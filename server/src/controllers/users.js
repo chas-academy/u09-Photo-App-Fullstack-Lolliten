@@ -120,9 +120,48 @@ export const removeFriend = async (req, res) => {
   }
 };
 
-//create redux state, make sure its coming through,
-//check how you set the friendRequest state, do similiar
-//
+export const rejectFriend = async (req, res) => {
+  try {
+    const { userId, friendId } = req.body;
+
+    const user = await User.findById(userId);
+    const friend = await User.findById(friendId);
+
+    // Check if both users exist
+    if (!user || !friend) {
+      return res.status(404).json({ message: "User or friend not found" });
+    }
+
+    // Remove the friendId from the user's friendRequests
+    // user.friendRequests = user.friendRequests.filter(
+    //   (request) => request._id.toString() !== friendId
+    // );
+
+         // Remove the friend request from the user's friendRequests
+         user.friendRequests = user.friendRequests.filter(
+          (request) => request._id.toString() !== friendId // Ensure to convert to string for comparison
+        );
+       
+        const index = friend.sentRequests.indexOf(userId);
+        if (index > -1) {
+          friend.sentRequests.splice(index, 1);
+        }
+
+    // Optionally, remove the userId from the friend's sentRequests
+    // friend.sentRequests = friend.sentRequests.filter(
+    //   (request) => request.toString() !== userId
+    // );
+
+    await user.save();
+    await friend.save();
+
+    res.status(200).json({ message: "Friend request rejected successfully" });
+  } catch (err) {
+    console.error("Error rejecting friend request:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
 export const friendRequests = async (req, res) => {
   try {
     const { userId, friendId } = req.body;

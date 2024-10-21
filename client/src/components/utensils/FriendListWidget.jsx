@@ -78,16 +78,9 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
           friendRequests: friendRequests.filter((request) => request._id !== friendId), // Remove accepted friend request
         })
       );
-      // setFriendRequests({ 
-      //   friendRequests: friendRequests.filter((id) => id !== friendId), //Removes accepted friendrequest
 
       // Remove the accepted friend from sentRequests
       dispatch(
-        // dispatch(
-        //   setSentRequests({
-        //     sentRequests: sentRequests.filter((id) => id.toString() !== friendId.toString()), // Ensure type consistency
-        //   })
-        // );
         setSentRequests({
           sentRequests: sentRequests.filter((id) => id !== friendId), // Remove from sentRequests
         })
@@ -116,7 +109,7 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
       // Only dispatch once to update friend requests
       dispatch(
         setFriendRequests({
-          friendRequests: friendRequests.filter((id) => id !== friendId),
+          friendRequests: friendRequests.filter((request) => request._id !== friendId),
         })
       );
     } catch (error) {
@@ -124,45 +117,41 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
     }
   };
 
-  // const handleRemoveFriend = async (friendId) => {
-  //   try {
-  //     const response = await fetch(`${import.meta.env.VITE_API_URL}friends/remove`, {
-  //       method: "PATCH",
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ userId: loggedInUserId, friendId }),
-  //     });
+  const handleRemove = async (friendId) => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}friends/remove-friend`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: loggedInUserId, friendId }),
+      });
   
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`);
-  //     }
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      // Remove the friend from the friends list
+      dispatch(
+        setFriends({
+          friends: friends.filter((friend) => friend._id !== friendId),
+        })
+      ) 
+      // dispatch(setFriends({ friends: updatedFriendsList }));
   
-  //     // Optionally, you can dispatch an action to update the Redux state here
-  //     // dispatch(setFriends({ friends: updatedFriendsList }));
-  
-  //   } catch (error) {
-  //     console.error("Error removing friend:", error);
-  //   }
-  // };
+    } catch (error) {
+      console.error("Error removing friend:", error);
+    }
+  };
 
   useEffect(() => {
     getFriends();
-  }, []); //re-render when new userId
+  }, []); //re-render when new userId or dispatch ???
 
   // Remove duplicate friend requests
   const uniqueFriendRequests = [...new Set(friendRequests)]; // DONT WORK CORRECT
 
-  /* dispatch(setFriends({ friends: [...friends, { _id: friendId }] })); // Add accepted friend
-    dispatch(
-      setFriendRequests({
-        friendRequests: friendRequests.filter((id) => id !== friendId),
-      })
-    );
-  }; */
-
-  console.log("loggedInUserId",loggedInUserId)
 
   return (
     <WidgetWrapper>
@@ -192,12 +181,12 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
                   height: "50px",
                   borderRadius: "50%",
                   marginRight: "10px",
-                }} // Style the image
+                }}
               />
             )}
             <ListItemText primary={`${friend.firstName} ${friend.lastName}`} />
             <Button
-              onClick={() => handleReject(friend._id)}
+              onClick={() => handleRemove(friend._id)}
               sx={{
                 m: "0.5rem 0",
                 p: "1rem",
