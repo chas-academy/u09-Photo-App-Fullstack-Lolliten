@@ -4,6 +4,7 @@ import {
   addFriend,
   friendRequests,
   removeFriend,
+  rejectFriend
 } from "../controllers/users.js";
 
 const friendsRoutes = express.Router();
@@ -22,6 +23,12 @@ friendsRoutes.patch(
 
 friendsRoutes.patch(
   "/reject-friend",
+  verifyToken(["admin", "user"]),
+  rejectFriend
+);
+
+friendsRoutes.patch(
+  "/remove-friend",
   verifyToken(["admin", "user"]),
   removeFriend
 );

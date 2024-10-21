@@ -9,7 +9,7 @@ import {
 import WidgetWrapper from "../utensils/WidgetWrapper";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setFriends, setFriendRequests } from "../../state/reduxConfig";
+import { setFriends, setFriendRequests, setSentRequests } from "../../state/reduxConfig"; //added set SentRequests
 
 const FriendListWidget = ({ userId, loggedInUserId }) => {
   const dispatch = useDispatch();
@@ -18,6 +18,7 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
   const friendRequests =
     useSelector((state) => state.user.friendRequests) || [];
   const friends = useSelector((state) => state.user.friends) || []; // Get friends from state
+  const sentRequests = useSelector((state) => state.user.sentRequests) || []; // Get sent requests from state
 
   const getFriends = async () => {
     try {
@@ -73,7 +74,14 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
       // Update friend requests
       dispatch(
         setFriendRequests({
-          friendRequests: friendRequests.filter((id) => id !== friendId), //Removes accepted friendrequest
+          friendRequests: friendRequests.filter((request) => request._id !== friendId), // Remove accepted friend request
+        })
+      );
+
+      // Remove the accepted friend from sentRequests
+      dispatch(
+        setSentRequests({
+          sentRequests: sentRequests.filter((id) => id !== friendId), // Remove from sentRequests
         })
       );
     } catch (error) {
@@ -94,13 +102,14 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
           body: JSON.stringify({ userId: loggedInUserId, friendId }), // Send both userId and friendId
         }
       );
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       // Only dispatch once to update friend requests
       dispatch(
         setFriendRequests({
-          friendRequests: friendRequests.filter((id) => id !== friendId),
+          friendRequests: friendRequests.filter((request) => request._id !== friendId),
         })
       );
     } catch (error) {
@@ -108,20 +117,48 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
     }
   };
 
+  const handleRemove = async (friendId) => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}friends/remove-friend`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: loggedInUserId, friendId }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      // Remove the friend from the friends list
+      dispatch(
+        setFriends({
+          friends: friends.filter((friend) => friend._id !== friendId),
+        })
+      ) 
+      // dispatch(setFriends({ friends: updatedFriendsList }));
+  
+    } catch (error) {
+      console.error("Error removing friend:", error);
+    }
+  };
+
   useEffect(() => {
     getFriends();
+
+  }, []); //re-render when new userId or dispatch ???
+
+  // Remove duplicate friend requests
+  const uniqueFriendRequests = [...new Set(friendRequests)]; // DONT WORK CORRECT
+
   }, []); //re-render when new userId
 
   // Remove duplicate friend requests
   const uniqueFriendRequests = [...new Set(friendRequests)];
 
-  /* dispatch(setFriends({ friends: [...friends, { _id: friendId }] })); // Add accepted friend
-    dispatch(
-      setFriendRequests({
-        friendRequests: friendRequests.filter((id) => id !== friendId),
-      })
-    );
-  }; */
+
 
   return (
     <WidgetWrapper>
@@ -151,12 +188,13 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
                   height: "50px",
                   borderRadius: "50%",
                   marginRight: "10px",
-                }} // Style the image
+                }}
+                }}
               />
             )}
             <ListItemText primary={`${friend.firstName} ${friend.lastName}`} />
             <Button
-              onClick={() => handleReject(friend._id)}
+              onClick={() => handleRemove(friend._id)}
               sx={{
                 m: "0.5rem 0",
                 p: "1rem",
@@ -180,7 +218,7 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
                   }`}
                 />
                 <Button
-                  onClick={() => handleAccept(friend)}
+                  onClick={() => handleAccept(friend._id)}
                   sx={{
                     m: "0.5rem 0",
                     p: "1rem",
@@ -196,7 +234,7 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
                   Accept
                 </Button>
                 <Button
-                  onClick={() => handleReject(friend)}
+                  onClick={() => handleReject(friend._id)}
                   sx={{
                     m: "0.5rem 0",
                     p: "1rem",

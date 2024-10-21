@@ -73,9 +73,15 @@ export const addFriend = async (req, res) => {
     if (!user.friends.includes(friendId)) {
       user.friends.push(friendId);
       friend.friends.push(userId);
-      const index = user.friendRequests.indexOf(friendId);
+
+      // Remove the friend request from the user's friendRequests
+      user.friendRequests = user.friendRequests.filter(
+        (request) => request._id.toString() !== friendId // Ensure to convert to string for comparison
+      );
+     
+      const index = friend.sentRequests.indexOf(userId);
       if (index > -1) {
-        user.friendRequests.splice(index, 1);
+        friend.sentRequests.splice(index, 1);
       }
     }
     await user.save();
@@ -103,6 +109,7 @@ export const removeFriend = async (req, res) => {
     user.friends = user.friends.filter((id) => id.toString() !== friendId);
     // Remove userId from friend's friend list
     friend.friends = friend.friends.filter((id) => id.toString() !== userId);
+
     await user.save();
     await friend.save();
     res.status(200).json({ message: "Friend removed successfully" });
@@ -111,9 +118,39 @@ export const removeFriend = async (req, res) => {
   }
 };
 
-//create redux state, make sure its coming through,
-//check how you set the friendRequest state, do similiar
-//
+export const rejectFriend = async (req, res) => {
+  try {
+    const { userId, friendId } = req.body;
+
+    const user = await User.findById(userId);
+    const friend = await User.findById(friendId);
+
+    // Check if both users exist
+    if (!user || !friend) {
+      return res.status(404).json({ message: "User or friend not found" });
+    }
+
+         // Remove the friend request from the user's friendRequests
+         user.friendRequests = user.friendRequests.filter(
+          (request) => request._id.toString() !== friendId // Ensure to convert to string for comparison
+        );
+       
+        const index = friend.sentRequests.indexOf(userId);
+        if (index > -1) {
+          friend.sentRequests.splice(index, 1);
+        }
+
+    await user.save();
+    await friend.save();
+
+    res.status(200).json({ message: "Friend request rejected successfully" });
+
+  } catch (err) {
+    console.error("Error rejecting friend request:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
 export const friendRequests = async (req, res) => {
   try {
     const { userId, friendId } = req.body;
@@ -144,14 +181,15 @@ export const friendRequests = async (req, res) => {
       await friend.save();
     }
 
-    // Send the response with friend's data
     res.status(200).json(friend.friendRequests);
+
   } catch (err) {
     res.status(500).json({ message: err.message });
     // Changed to 500 for server errors
   }
 };
 
+//edit profile
 export const deleteUser = async (req, res) => {
   const { id } = req.params;
   try {
@@ -166,6 +204,7 @@ export const deleteUser = async (req, res) => {
   }
 };
 
+//edit profile
 export const updateUser = async (req, res) => {
   const { id } = req.params;
   const { firstName, lastName, email, password, oldPassword } = req.body;

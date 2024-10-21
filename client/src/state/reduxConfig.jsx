@@ -14,7 +14,7 @@ const initialState = {
     isLoading: false,
     error: null,
   },
-  sentRequests: new Set(), // Add this line
+   sentRequests: [],
 };
 
 export const authSlice = createSlice({
@@ -86,7 +86,7 @@ export const authSlice = createSlice({
       state.user = { ...state.user, ...action.payload }; // Merge existing user data with new data
     },
     setSentRequests: (state, action) => {
-      state.sentRequests = new Set(action.payload); // Update sentRequests
+      state.sentRequests = action.payload.sentRequests; // Update sentRequests
     },
   },
 });
