@@ -150,14 +150,9 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
 
   }, []); //re-render when new userId or dispatch ???
 
-  // Remove duplicate friend requests
-  const uniqueFriendRequests = [...new Set(friendRequests)]; // DONT WORK CORRECT
-
-  }, []); //re-render when new userId
 
   // Remove duplicate friend requests
   const uniqueFriendRequests = [...new Set(friendRequests)];
-
 
 
   return (
@@ -189,8 +184,7 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
                   borderRadius: "50%",
                   marginRight: "10px",
                 }}
-                }}
-              />
+              /> // Corrected closing tag
             )}
             <ListItemText primary={`${friend.firstName} ${friend.lastName}`} />
             <Button
