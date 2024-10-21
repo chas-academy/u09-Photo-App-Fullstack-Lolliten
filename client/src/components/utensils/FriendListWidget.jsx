@@ -9,7 +9,7 @@ import {
 import WidgetWrapper from "../utensils/WidgetWrapper";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setFriends, setFriendRequests } from "../../state/reduxConfig";
+import { setFriends, setFriendRequests, setSentRequests } from "../../state/reduxConfig"; //added set SentRequests
 
 const FriendListWidget = ({ userId, loggedInUserId }) => {
   const dispatch = useDispatch();
@@ -18,6 +18,7 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
   const friendRequests =
     useSelector((state) => state.user.friendRequests) || [];
   const friends = useSelector((state) => state.user.friends) || []; // Get friends from state
+  const sentRequests = useSelector((state) => state.user.sentRequests) || []; // Get sent requests from state
 
   const getFriends = async () => {
     try {
@@ -56,6 +57,7 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+
       // Fetch the updated friends list after accepting the friend request
       const updatedFriendsResponse = await fetch(
         `${import.meta.env.VITE_API_URL}users/${loggedInUserId}/friends`,
@@ -70,10 +72,18 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
       const updatedFriendsData = await updatedFriendsResponse.json();
       dispatch(setFriends({ friends: updatedFriendsData })); // Dispatch the updated friends list
 
+      // DONT WORK CORRECT
       // Update friend requests
       dispatch(
-        setFriendRequests({
+        setFriendRequests({ 
           friendRequests: friendRequests.filter((id) => id !== friendId), //Removes accepted friendrequest
+        })
+      );
+      // DONT WORK CORRECT
+      // Remove the accepted friend from sentRequests
+      dispatch(
+        setSentRequests({
+          sentRequests: sentRequests.filter((id) => id !== friendId), // Remove from sentRequests
         })
       );
     } catch (error) {
@@ -108,12 +118,35 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
     }
   };
 
+  // const handleRemoveFriend = async (friendId) => {
+  //   try {
+  //     const response = await fetch(`${import.meta.env.VITE_API_URL}friends/remove`, {
+  //       method: "PATCH",
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ userId: loggedInUserId, friendId }),
+  //     });
+  
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+  
+  //     // Optionally, you can dispatch an action to update the Redux state here
+  //     // dispatch(setFriends({ friends: updatedFriendsList }));
+  
+  //   } catch (error) {
+  //     console.error("Error removing friend:", error);
+  //   }
+  // };
+
   useEffect(() => {
     getFriends();
   }, []); //re-render when new userId
 
   // Remove duplicate friend requests
-  const uniqueFriendRequests = [...new Set(friendRequests)];
+  const uniqueFriendRequests = [...new Set(friendRequests)]; // DONT WORK CORRECT
 
   /* dispatch(setFriends({ friends: [...friends, { _id: friendId }] })); // Add accepted friend
     dispatch(
@@ -122,6 +155,8 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
       })
     );
   }; */
+
+  console.log("loggedInUserId",loggedInUserId)
 
   return (
     <WidgetWrapper>
@@ -180,7 +215,7 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
                   }`}
                 />
                 <Button
-                  onClick={() => handleAccept(friend)}
+                  onClick={() => handleAccept(friend._id)}
                   sx={{
                     m: "0.5rem 0",
                     p: "1rem",

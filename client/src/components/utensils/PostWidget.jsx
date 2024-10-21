@@ -10,6 +10,7 @@ import {
   import { useState, useEffect } from "react";
   import { useDispatch, useSelector } from "react-redux";
   import { setPosts } from "../../state/reduxConfig"; //later import setPost too
+  import { format } from 'date-fns';
   
   const PostWidget = ({
     postId,
@@ -42,11 +43,14 @@ import {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          // body: JSON.stringify({ userId: loggedInUserId }),
         });
         const data = await response.json();
-        setPostsState(data); // Set the local posts state with the fetched data
-        dispatch(setPosts({ posts: data })); // Dispatch to redux store
+        
+        // Sort posts by creation date (latest first)
+        const sortedPosts = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+        setPostsState(sortedPosts); // Set the local posts state with the sorted data
+        dispatch(setPosts({ posts: sortedPosts })); // Dispatch to redux store
       } catch (err) {
         console.error("Error fetching posts", err);
       }
@@ -133,6 +137,12 @@ import {
               ))}
               <Divider />
             </Box>
+          )}
+          {/* Display the date and time the post was created */}
+          {post.createdAt && (
+            <Typography color="neutral.main" sx={{ mt: "1rem" }}>
+              {format(new Date(post.createdAt), 'MMMM dd, yyyy HH:mm')} {/* Format the date */}
+            </Typography>
           )}
         </WidgetWrapper>
       ))}

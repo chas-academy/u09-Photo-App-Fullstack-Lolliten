@@ -73,9 +73,20 @@ export const addFriend = async (req, res) => {
     if (!user.friends.includes(friendId)) {
       user.friends.push(friendId);
       friend.friends.push(userId);
-      const index = user.friendRequests.indexOf(friendId);
+
+      console.log(friend.sentRequests) //TEST
+
+      console.log("original friendrequest", user.friendRequests) //TEST
+      console.log("filter friendrequest", user.friendRequests.filter(friendRequest => friendRequest._id !== friendId)) //TEST
+      
+      user.friendRequests = user.friendRequests.filter(friendRequest => friendRequest._id !== friendId) //NOT CORRECT FILTER
+
+      console.log("friendid:", friendId) //TEST
+      console.log("userId:", userId) //TEST
+     
+      const index = friend.sentRequests.indexOf(userId);
       if (index > -1) {
-        user.friendRequests.splice(index, 1);
+        friend.sentRequests.splice(index, 1);
       }
     }
     await user.save();
@@ -144,14 +155,14 @@ export const friendRequests = async (req, res) => {
       await friend.save();
     }
 
-    // Send the response with friend's data
-    res.status(200).json(friend.friendRequests);
+    res.status(200).json(friend.friendRequests); // CORRECT ???
   } catch (err) {
     res.status(500).json({ message: err.message });
     // Changed to 500 for server errors
   }
 };
 
+//edit profile
 export const deleteUser = async (req, res) => {
   const { id } = req.params;
   try {
@@ -166,6 +177,7 @@ export const deleteUser = async (req, res) => {
   }
 };
 
+//edit profile
 export const updateUser = async (req, res) => {
   const { id } = req.params;
   const { firstName, lastName, email, password, oldPassword } = req.body;
