@@ -3,7 +3,7 @@ import User from "../models/User.js";
 
 export const createPost = async (req, res) => {
   try {
-    const { userId, description, picturePath } = req.body; //what front should send
+    const { userId, description, picturePath } = req.body;
     const user = await User.findById(userId);
   
     const newPost = new Post({
@@ -16,9 +16,9 @@ export const createPost = async (req, res) => {
       likes: {},
       comments: [],
     });
-    await newPost.save(); //adding new post
+    await newPost.save();
 
-    const post = await Post.find(); //get Post model and find the image
+    const post = await Post.find();
     res.status(201).json(post);
   } catch (err) {
     res.status(409).json({ message: err.message });
@@ -48,29 +48,50 @@ export const getUserPosts = async (req, res) => {
   }
 };
 
-/* UPDATE */
-export const likePost = async (req, res) => {
+//Define postId and userId in new comment ???
+export const addCommentPost = async (req, res) => {
   try {
-    const { id } = req.params; //get paramaters id (user) from mongo
-    const { userId } = req.body; //get userId from req in body
-    const post = await Post.findById(id); //grabbing post info
-    const isLiked = post.likes.get(userId); //check if the userid exist and the post is liked
+    const { id } = req.params; //id postID or postId in body and userId in req ???
+    const { userId, text } = req.body; 
 
-    //an object that include a list of id if it exist delete it
-    if (isLiked) {
-      post.likes.delete(userId);
-    } else {
-      post.likes.set(userId, true); //if non existing set
+    console.log("Add comment postId:", id); // test
+
+    const post = await Post.findById(id).populate({
+      path: 'comments.userId',
+      select: 'firstName lastName',
+    });
+        // Create a new comment object
+        const newComment = {
+          userId,
+          text,
+          createdAt: new Date(),
+        };
+
+        post.comments.push(newComment);
+        console.log("new comment", newComment)
+
+        await post.save();
+
+        //post.findByIdAndUpdate(id, post, {new: true}) ?? //Update here or in own function ???
+
+    res.status(200).json(newComment); // or newPost or post ???
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+};
+
+export const fetchCommentPost = async (req, res) => {
+  try {
+    const { id } = req.params; // Post ID
+
+    // Find the post by ID and select only the comments field
+    const post = await Post.findById(id).select('comments');
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
     }
 
-    const updatedPost = await Post.findByIdAndUpdate(
-      //find and update a specific post
-      id,
-      { likes: post.likes },
-      { new: true }
-    );
-
-    res.status(200).json(updatedPost); //update frontend
+    res.status(200).json(post.comments); // Return the comments
   } catch (err) {
     res.status(404).json({ message: err.message });
   }

@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { setLogin } from "../../../state/reduxConfig";
 import Dropzone from "react-dropzone";
 import FlexBetween from "../../utensils/FlexBetween";
+import capitalizeFirstLetters from "../../utensils/capitalizeFirstLetters"; // Import the function
 
 /* Schema for form validation in Yup */
 const registerSchema = yup.object().shape({
@@ -50,10 +51,16 @@ const Form = () => {
   const isRegister = pageType === "register";
 
   const register = async (values, onSubmitProps) => {
+    // Capitalize first and last names
+    const capitalizedFirstName = capitalizeFirstLetters(values.firstName);
+    const capitalizedLastName = capitalizeFirstLetters(values.lastName);
+
     const formData = new FormData();
     for (let value in values) {
       formData.append(value, values[value]);
     }
+    formData.append("firstName", capitalizedFirstName); // Use capitalized first name
+    formData.append("lastName", capitalizedLastName); // Use capitalized last name
     formData.append("picturePath", values.picture.name);
 
     const savedUserResponse = await fetch(
@@ -85,7 +92,7 @@ const Form = () => {
 
     if (loggedInResponse.status === 400) {
       console.error("Login failed:", loggedInResponse.status);
-      setErrorMessage("Username or passsword incorrect");
+      setErrorMessage("Username or password incorrect");
     }
 
     if (loggedInResponse.status !== 200 && loggedInResponse.status !== 400) {

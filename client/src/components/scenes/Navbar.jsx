@@ -30,6 +30,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "../utensils/FlexBetween.jsx";
+import capitalizeFirstLetters from "../utensils/capitalizeFirstLetters.jsx"; // Import the function
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
@@ -108,7 +109,7 @@ const Navbar = () => {
   let fullName = ""; //default
 
   if (user) {
-    fullName = `${user.firstName} ${user.lastName}`;
+    fullName = capitalizeFirstLetters(`${user.firstName} ${user.lastName}`); // Capitalize the user's full name
   }
 
   const goToHome = () => {

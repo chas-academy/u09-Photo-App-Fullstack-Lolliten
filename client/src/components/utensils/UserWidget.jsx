@@ -11,6 +11,7 @@ import WidgetWrapper from "../utensils/WidgetWrapper";
 import { useSelector } from "react-redux"; //ta bort ?
 import { useEffect, useState } from "react"; //ta bort ?
 import { useNavigate } from "react-router-dom";
+import capitalizeFirstLetters from "../utensils/capitalizeFirstLetters";
 
 const UserWidget = ({ userId, picturePath }) => {
   const [user, setUser] = useState(null);
@@ -66,7 +67,7 @@ useEffect(() => {
                 },
               }}
             >
-              {firstName} {lastName}
+              {capitalizeFirstLetters(`${firstName} ${lastName}`)}
             </Typography>
             <Typography color={medium}>{friends.length} friends</Typography>
           </Box>

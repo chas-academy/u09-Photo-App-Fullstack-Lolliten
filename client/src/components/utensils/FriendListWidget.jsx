@@ -10,6 +10,7 @@ import WidgetWrapper from "../utensils/WidgetWrapper";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setFriends, setFriendRequests, setSentRequests } from "../../state/reduxConfig"; //added set SentRequests
+import capitalizeFirstLetters from "../utensils/capitalizeFirstLetters"; // Import the function
 
 const FriendListWidget = ({ userId, loggedInUserId }) => {
   const dispatch = useDispatch();
@@ -147,13 +148,10 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
 
   useEffect(() => {
     getFriends();
-
   }, []); //re-render when new userId or dispatch ???
-
 
   // Remove duplicate friend requests
   const uniqueFriendRequests = [...new Set(friendRequests)];
-
 
   return (
     <WidgetWrapper>
@@ -184,9 +182,9 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
                   borderRadius: "50%",
                   marginRight: "10px",
                 }}
-              /> // Corrected closing tag
+              />
             )}
-            <ListItemText primary={`${friend.firstName} ${friend.lastName}`} />
+            <ListItemText primary={capitalizeFirstLetters(`${friend.firstName} ${friend.lastName}`)} /> {/* Capitalize friend's name */}
             <Button
               onClick={() => handleRemove(friend._id)}
               sx={{
@@ -205,11 +203,9 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
         {uniqueFriendRequests.map(
           (friend) =>
             friend && ( // changed to map friend not friendId, and key from friendId
-              <ListItem key={friend}>
+              <ListItem key={friend._id}>
                 <ListItemText
-                  primary={`Friend request from ${
-                    (friend.firstName, friend.lastName)
-                  }`}
+                  primary={`Friend request from ${capitalizeFirstLetters(`${friend.firstName} ${friend.lastName}`)}`} // Capitalize friend's name
                 />
                 <Button
                   onClick={() => handleAccept(friend._id)}
@@ -255,10 +251,3 @@ const FriendListWidget = ({ userId, loggedInUserId }) => {
 };
 
 export default FriendListWidget;
-
-/*
-{uniqueFriendRequests
-  .filter(friendId => friendId) // Filter out null or undefined friendIds
-  .map((friendId) => (
-    <ListItem key={friendId}>
-*/
