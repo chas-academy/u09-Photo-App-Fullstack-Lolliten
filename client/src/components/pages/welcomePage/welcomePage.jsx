@@ -1,7 +1,7 @@
 import { Box, useMediaQuery } from "@mui/material";
 import Navbar from "../../scenes/Navbar";
 import MyPostWidget from "../../utensils/MyPostWidget";
-import PostWidget from "../../utensils/PostWidget"; // Import PostWidget
+import PostWidget from "../../utensils/PostWidget";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
@@ -31,7 +31,7 @@ const WelcomePage = () => {
             <Navbar />
             <Box>
                 <MyPostWidget />
-                <PostWidget posts={posts} /> {/* Pass fetched posts to PostWidget */}
+                <PostWidget /> {/*posts={posts} Pass fetched posts to PostWidget */}
             </Box>
         </Box>
     );

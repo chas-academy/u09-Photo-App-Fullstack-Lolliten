@@ -1,3 +1,20 @@
+/* 
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "./reduxConfig";
+
+const store = configureStore({
+  reducer: {
+    auth: authReducer,
+  },
+  // Add middleware if needed
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false, // Disable serializable check if needed
+    }),
+});
+
+export default store;
+*/
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
