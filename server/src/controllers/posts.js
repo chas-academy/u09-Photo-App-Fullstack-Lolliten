@@ -5,7 +5,7 @@ export const createPost = async (req, res) => {
   try {
     const { userId, description, picturePath } = req.body;
     const user = await User.findById(userId);
-  
+
     const newPost = new Post({
       userId,
       firstName: user.firstName,
@@ -29,8 +29,8 @@ export const createPost = async (req, res) => {
 export const getFeedPosts = async (req, res) => {
   try {
     const posts = await Post.find()
-    .populate('userId', 'firstName lastName userPicturePath') // Populate user details
-    .exec()
+      .populate("userId", "firstName lastName userPicturePath") // Populate user details
+      .exec();
 
     res.status(200).json(posts);
   } catch (err) {
@@ -48,33 +48,30 @@ export const getUserPosts = async (req, res) => {
   }
 };
 
-//Define postId and userId in new comment ???
 export const addCommentPost = async (req, res) => {
   try {
-    const { id } = req.params; //id postID or postId in body and userId in req ???
-    const { userId, text } = req.body; 
+    const { id } = req.params;
+    const { userId, text } = req.body;
 
     console.log("Add comment postId:", id); // test
 
     const post = await Post.findById(id).populate({
-      path: 'comments.userId',
-      select: 'firstName lastName',
+      path: "comments.userId",
+      select: "firstName lastName",
     });
-        // Create a new comment object
-        const newComment = {
-          userId,
-          text,
-          createdAt: new Date(),
-        };
 
-        post.comments.push(newComment);
-        console.log("new comment", newComment)
+    const newComment = {
+      userId,
+      text,
+      createdAt: new Date(),
+    };
 
-        await post.save();
+    post.comments.push(newComment);
+    console.log("new comment", newComment);
 
-        //post.findByIdAndUpdate(id, post, {new: true}) ?? //Update here or in own function ???
+    await post.save();
 
-    res.status(200).json(newComment); // or newPost or post ???
+    res.status(200).json(newComment);
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
@@ -84,14 +81,13 @@ export const fetchCommentPost = async (req, res) => {
   try {
     const { id } = req.params; // Post ID
 
-    // Find the post by ID and select only the comments field
-    const post = await Post.findById(id).select('comments');
+    const post = await Post.findById(id).select("comments");
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    res.status(200).json(post.comments); // Return the comments
+    res.status(200).json(post.comments);
   } catch (err) {
     res.status(404).json({ message: err.message });
   }

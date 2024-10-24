@@ -20,7 +20,6 @@ import {
   Close,
 } from "@mui/icons-material";
 import {
-  setSearchQuery, // Fix this state ???
   setSearchLoading,
   setSearchResults,
   setSearchError,
@@ -38,7 +37,8 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
-  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+  const isNonMobileScreens = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   const theme = useTheme();
   const neutralLight = theme.palette.neutral.light;
@@ -46,18 +46,6 @@ const Navbar = () => {
   const background = theme.palette.background.default;
   const primaryLight = theme.palette.primary.light;
   const alt = theme.palette.background.alt;
-
-  /*const handleSearch = async (e) => {
-    e.preventDefault();
-    console.log(searchQuery)
-    if (searchQuery.trim()) {
-      navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
-    }
-  }
-
-  const handleChange = (event) => {
-    setSearchQuery(event.target.value);
-  };*/
 
   const handleChange = (event) => {
     setSearchQuery(event.target.value);
@@ -122,7 +110,7 @@ const Navbar = () => {
 
   return (
     <FlexBetween padding="1rem 6%" backgroundColor={alt}>
-      <FlexBetween gap="1.75rem">
+      <FlexBetween gap="1.75rem" flexDirection={isMobile ? "column" : "row"}>
         <Typography
           fontWeight="bold"
           fontSize="clamp(1rem, 2rem, 2.25rem)"
@@ -137,23 +125,33 @@ const Navbar = () => {
         >
           Digital Album
         </Typography>
-        {isNonMobileScreens && (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          width={isMobile ? "100%" : "auto"}
+          mt={isMobile ? 2 : 0}
+        >
           <FlexBetween
             backgroundColor={neutralLight}
             borderRadius="9px"
-            gap="3rem"
-            padding="0.1rem 1.5rem"
+            gap="1rem"
+            padding="0.1rem 1rem"
+            sx={{
+              width: isMobile ? "95%" : "auto",
+            }}
           >
             <InputBase
               placeholder="Search..."
               value={searchQuery}
               onChange={handleChange}
+              sx={{ flex: 1 }}
             />
             <IconButton onClick={handleSearch}>
               <Search />
             </IconButton>
           </FlexBetween>
-        )}
+        </Box>
       </FlexBetween>
 
       {/* DESKTOP NAV */}
@@ -231,6 +229,25 @@ const Navbar = () => {
             alignItems="center"
             gap="3rem"
           >
+            <FlexBetween
+              backgroundColor={neutralLight}
+              borderRadius="9px"
+              gap="1rem"
+              padding="0.1rem 1rem"
+              sx={{
+                width: "80%", // Adjust width for mobile
+              }}
+            >
+              <InputBase
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={handleChange}
+                sx={{ flex: 1 }}
+              />
+              <IconButton onClick={handleSearch}>
+                <Search />
+              </IconButton>
+            </FlexBetween>
             <IconButton
               onClick={() => dispatch(setMode())}
               sx={{ fontSize: "25px" }}

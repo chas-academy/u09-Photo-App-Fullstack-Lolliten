@@ -14,9 +14,9 @@ It's a social media app where you can create an account too connect with friends
 - Airbnb _as standard_
 - Prettier _for formatting_
 - PWA
-- Insomnia documentation
+- Postman documentation
 
-### Deploy
+## Deploy
 
 #### Backend
 
@@ -26,16 +26,24 @@ It's a social media app where you can create an account too connect with friends
 
 - Netlify
 
-### Links
+## Links
+
+### The Process
+
+- [Read about setup, develop and installation here](x-ReadME/DevelopProcess.md)
 
 #### Figma
 
-- https://www.figma.com/proto/OFMJ1vpfDmxRJnfXUxQg3z/Figma-Project?node-id=0-1&t=u4XbcaaR8QwriqHr-1
+- [Look at prototypes, sitemap and ER-diagram here](https://www.figma.com/proto/OFMJ1vpfDmxRJnfXUxQg3z/Figma-Project?node-id=0-1&t=u4XbcaaR8QwriqHr-1)
 
 #### User stories and questionaire:
 
-- [UserStories_Questionnaire:](x-ReadME/User_and_links.md)
+- [Read UserStories and Questionnaire here](x-ReadME/User_and_links.md)
 
 ### Screenshots
 
-Of project display here.
+![Profile](x-ReadME/profileU09.png)
+
+![Comments](x-ReadME/commentU09.png)
+
+![Login](x-ReadME/Login.png)
