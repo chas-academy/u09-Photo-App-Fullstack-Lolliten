@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux"; // Import useDispatch and useSelector
-import { setUserProfile } from "../../../state/reduxConfig"; // Import the action
+import { useDispatch, useSelector } from "react-redux";
+import { setUserProfile } from "../../../state/reduxConfig";
 import Navbar from "../../scenes/Navbar";
 import {
   Box,
@@ -9,14 +9,16 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  Container,
+  Paper,
+  Stack,
 } from "@mui/material";
-import Dropzone from "react-dropzone";
 import { useParams, useNavigate } from "react-router-dom";
 
 const EditProfilePage = () => {
   const { userId } = useParams();
-  const dispatch = useDispatch(); // Initialize dispatch
-  const user = useSelector((state) => state.user); // Get user from Redux state
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
   const [formValues, setFormValues] = useState({
     firstName: user.firstName || "",
     lastName: user.lastName || "",
@@ -27,16 +29,19 @@ const EditProfilePage = () => {
   });
   const [errorMessage, setErrorMessage] = useState(null);
   const theme = useTheme();
-  const isNonMobile = useMediaQuery("(min-width:600px)");
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const token = useSelector((state) => state.token);
   const navigate = useNavigate();
 
   useEffect(() => {
     const getUser = async () => {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}users/${userId}`, {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}users/${userId}`,
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         setFormValues({
@@ -59,28 +64,32 @@ const EditProfilePage = () => {
     setFormValues({ ...formValues, [name]: value });
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setFormValues({ ...formValues, picturePath: file });
+    }
+  };
+
   const handleUpdate = async (e) => {
     e.preventDefault();
     const formData = new FormData();
     for (let key in formValues) {
-      if (key === "picturePath" && formValues.picturePath instanceof File) {
-        formData.append("picturePath", formValues.picturePath);
-      } else {
-        formData.append(key, formValues[key]);
-      }
+      formData.append(key, formValues[key]);
     }
 
-    const response = await fetch(`${import.meta.env.VITE_API_URL}users/${userId}`, {
-      method: "PUT",
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData,
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}users/${userId}`,
+      {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      }
+    );
 
     if (response.ok) {
-      // Dispatch the action to update the Redux state
-      dispatch(setUserProfile(formValues)); // Update the user profile in Redux
-      console.log("Profile updated successfully");
-      navigate(`/profile/${userId}`); // Redirect to the profile page after update
+      dispatch(setUserProfile(formValues));
+      navigate(`/profile/${userId}`);
     } else {
       const error = await response.json();
       setErrorMessage(error.message || "Failed to update profile");
@@ -88,13 +97,15 @@ const EditProfilePage = () => {
   };
 
   const handleDeleteAccount = async () => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}users/${userId}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}users/${userId}`,
+      {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
     if (response.ok) {
-      console.log("Account deleted successfully");
-      navigate("/"); // Redirect to home after deletion
+      navigate("/");
     } else {
       const error = await response.json();
       setErrorMessage(error.message || "Failed to delete account");
@@ -102,126 +113,150 @@ const EditProfilePage = () => {
   };
 
   return (
-    <Box>
+    <Box sx={{ minHeight: "100vh", bgcolor: theme.palette.background.default }}>
       <Navbar />
-      <Box
-        component="form"
-        onSubmit={handleUpdate}
-        sx={{
-          display: "grid",
-          gap: "30px",
-          gridTemplateColumns: isNonMobile ? "repeat(4, minmax(0, 1fr))" : "1fr",
-          padding: "2rem",
-        }}
-      >
-        <TextField
-          label="First Name"
-          name="firstName"
-          value={formValues.firstName}
-          onChange={handleInputChange}
-          required
-          sx={{ gridColumn: "span 2" }}
-        />
-        <TextField
-          label="Last Name"
-          name="lastName"
-          value={formValues.lastName}
-          onChange={handleInputChange}
-          required
-          sx={{ gridColumn: "span 2" }}
-        />
-        <TextField
-          label="Email"
-          type="email"
-          name="email"
-          value={formValues.email}
-          onChange={handleInputChange}
-          required
-          sx={{ gridColumn: "span 2" }}
-        />
-        <TextField
-          label="Password"
-          type="password"
-          name="password"
-          value={formValues.password}
-          onChange={handleInputChange}
-          sx={{ gridColumn: "span 4" }}
-        />
-        <TextField
-          label="Old Password"
-          type="password"
-          name="oldPassword"
-          value={formValues.oldPassword}
-          onChange={handleInputChange}
-          sx={{ gridColumn: "span 4" }}
-        />
-        <Box
-          gridColumn="span 4"
-          border={`1px solid ${theme.palette.neutral.medium}`}
-          borderRadius="5px"
-          p="1rem"
+      <Container maxWidth="md" sx={{ py: { xs: 4, sm: 6 } }}>
+        <Paper
+          elevation={3}
+          component="form"
+          onSubmit={handleUpdate}
+          sx={{
+            p: { xs: 2, sm: 4 },
+            mt: 2,
+          }}
         >
-          <Dropzone
-            acceptedFiles=".jpg, .jpeg, .png"
-            multiple={false}
-            onDrop={(acceptedFiles) =>
-              setFormValues({ ...formValues, picturePath: acceptedFiles[0] })
-            }
+          <Typography
+            variant="h4"
+            component="h1"
+            gutterBottom
+            sx={{
+              mb: 4,
+              textAlign: "center",
+            }}
           >
-            {({ getRootProps, getInputProps }) => (
-              <Box
-                {...getRootProps()}
-                border={`2px dashed ${theme.palette.neutral.main}`}
-                p="1rem"
-                sx={{ "&:hover": { cursor: "pointer" } }}
-              >
-                <input {...getInputProps()} />
-                {!formValues.picturePath ? (
-                  <p> Add Picture Here</p>
-                ) : (
-                  <Typography>{formValues.picturePath.name}</Typography>
-                )}
-              </Box>
-            )}
-          </Dropzone>
-        </Box>
-        {errorMessage && (
-          <Typography color={theme.palette.error.main} sx={{ mt: "1rem" }}>
-            {errorMessage}
+            Edit Profile
           </Typography>
-        )}
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          sx={{ gridColumn: "span 4" }}
-        >
-          Update Profile
-        </Button>
-        <Button
-          variant="outlined"
-          color="error"
-          onClick={handleDeleteAccount}
-          sx={{ gridColumn: "span 4" }}
-        >
-          Delete Account
-        </Button>
-      </Box>
+
+          <Stack spacing={3}>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                gap: 2,
+              }}
+            >
+              <TextField
+                label="First Name"
+                name="firstName"
+                value={formValues.firstName}
+                onChange={handleInputChange}
+                required
+                fullWidth
+              />
+              <TextField
+                label="Last Name"
+                name="lastName"
+                value={formValues.lastName}
+                onChange={handleInputChange}
+                required
+                fullWidth
+              />
+            </Box>
+
+            <TextField
+              label="Email"
+              type="email"
+              name="email"
+              value={formValues.email}
+              onChange={handleInputChange}
+              required
+              fullWidth
+            />
+
+            <TextField
+              label="New Password"
+              type="password"
+              name="password"
+              value={formValues.password}
+              onChange={handleInputChange}
+              fullWidth
+            />
+
+            <TextField
+              label="Old Password"
+              type="password"
+              name="oldPassword"
+              value={formValues.oldPassword}
+              onChange={handleInputChange}
+              fullWidth
+            />
+
+            <Paper
+              variant="outlined"
+              sx={{
+                p: 2,
+                textAlign: "center",
+              }}
+            >
+              <input
+                accept="image/*"
+                style={{ display: "none" }}
+                id="profile-photo-upload"
+                type="file"
+                onChange={handleFileChange}
+              />
+              <label htmlFor="profile-photo-upload">
+                <Button variant="outlined" component="span" sx={{ mb: 1 }}>
+                  Upload Profile Photo
+                </Button>
+              </label>
+              {formValues.picturePath && (
+                <Typography variant="body2" sx={{ mt: 1 }}>
+                  Selected file:{" "}
+                  {typeof formValues.picturePath === "string"
+                    ? formValues.picturePath
+                    : formValues.picturePath.name}
+                </Typography>
+              )}
+            </Paper>
+
+            {errorMessage && (
+              <Typography color="error" variant="body2" sx={{ mt: 2 }}>
+                {errorMessage}
+              </Typography>
+            )}
+
+            <Stack
+              spacing={2}
+              sx={{
+                mt: 4,
+                width: "100%",
+              }}
+            >
+              <Button
+                type="submit"
+                variant="contained"
+                size="large"
+                sx={{ py: 1.5 }}
+              >
+                Update Profile
+              </Button>
+
+              <Button
+                variant="outlined"
+                color="error"
+                size="large"
+                onClick={handleDeleteAccount}
+                sx={{ py: 1.5 }}
+              >
+                Delete Account
+              </Button>
+            </Stack>
+          </Stack>
+        </Paper>
+      </Container>
     </Box>
   );
 };
 
 export default EditProfilePage;
-
-/*
-  /*Toggle editing mode */
-/*const toggleEdit = () => {
-    setUser(!user);
-  };
-
-onClick={toggleEdit}
-
-form onSubmit={handleUpdate}
-
-Username, password, email, picture: onChange={handleInputChange}
-*/

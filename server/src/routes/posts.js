@@ -33,7 +33,7 @@ postsRoutes.post("/allPosts", verifyToken(["admin", "user"]), getFeedPosts);
 postsRoutes.get("/:userId", verifyToken(["admin", "user"]), getUserPosts);
 
 postsRoutes.get(
-  "/:id/addComments",
+  "/:id/fetchComments",
   verifyToken(["admin", "user"]),
   fetchCommentPost
 );

@@ -21,22 +21,15 @@ import { setPosts } from "../../state/reduxConfig";
 import capitalizeFirstLetters from "../utensils/capitalizeFirstLetters";
 import { format } from "date-fns";
 
-/* Sorteringregel, skicka in function(sorteringsregel) i filter */
-
 const PostWidget = () => {
   const [isCommentBoxOpen, setIsCommentBoxOpen] = useState(false);
   const [commentText, setCommentText] = useState("");
+  const [comments, setComments] = useState([]);
   const [posts, setPostsState] = useState([]);
-  
+
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
   const loggedInUserId = useSelector((state) => state.user?._id);
-
-  // const test = useSelector((state) => state.user?.firstName)
-  // console.log(firstName)
-
-  // const isLiked = Boolean(likes && loggedInUserId && likes[loggedInUserId]);
-  // const likeCount = likes ? Object.keys(likes).length : 0;
 
   const fetchPosts = async () => {
     try {
@@ -51,28 +44,25 @@ const PostWidget = () => {
         }
       );
       const data = await response.json();
-      console.log("Log response", data); // Test
 
       // Sort posts by creation date (latest first)
       const sortedPosts = data.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
 
-      setPostsState(sortedPosts); // Set the local posts state with the sorted data
-      dispatch(setPosts({ posts: sortedPosts })); // Dispatch to redux store
+      setPostsState(sortedPosts);
+      dispatch(setPosts({ posts: sortedPosts }));
     } catch (err) {
       console.error("Error fetching posts", err);
     }
   };
 
-  // use newComment json to update 
-  //nedd id but do not display, include first lastname in the comment data
   const fetchComments = async () => {
     try {
-      const { _id, token } = useSelector((state) => state.user); // ???
+      const { _id, token } = useSelector((state) => state.user);
 
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}posts/${_id}/addComments`,
+        `${import.meta.env.VITE_API_URL}posts/${_id}/fetchComments`,
         {
           method: "GET",
           headers: {
@@ -88,7 +78,7 @@ const PostWidget = () => {
     }
   };
 
-  const handleCommentSubmit = async ( postId ) => {
+  const handleCommentSubmit = async (postId) => {
     if (!commentText.trim()) return;
 
     try {
@@ -109,12 +99,13 @@ const PostWidget = () => {
       }
 
       const updatedCommentPost = await response.json();
-      // or dispatch an action to update the Redux ???
-      setCommentText((prevPosts) =>
+
+      setPostsState((prevPosts) =>
         prevPosts.map((post) =>
           post._id === updatedCommentPost._id ? updatedCommentPost : post
         )
       );
+      setCommentText("");
     } catch (error) {
       console.error("Error submitting comment:", error);
     }
@@ -123,15 +114,13 @@ const PostWidget = () => {
   const toggleCommentBox = () => {
     setIsCommentBoxOpen(!isCommentBoxOpen);
     if (!isCommentBoxOpen) {
-      fetchComments(); // Fetch comments when comment box opens
+      fetchComments();
     }
   };
 
   useEffect(() => {
-    fetchPosts(); // Fetch posts when the component mounts
+    fetchPosts();
   }, []);
-
-  /*in backend, create object, with userId of poster, comment-string and timestamp. (Extra edit timestamp is more transparency to user)*/
 
   return (
     <Box>
@@ -247,8 +236,10 @@ const PostWidget = () => {
                   <Typography
                     sx={{ color: "neutral.main", m: "0.5rem 0", pl: "1rem" }}
                   >
-                      {capitalizeFirstLetters(
-                      `${comment.firstName || 'Unknown'} ${comment.lastName || 'User'}`
+                    {capitalizeFirstLetters(
+                      `${comment.firstName || "Unknown"} ${
+                        comment.lastName || "User"
+                      }`
                     )}{" "}
                     | {comment.text}
                   </Typography>

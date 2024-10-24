@@ -53,34 +53,9 @@ const ProfilePage = () => {
     setPosts(data); // Set the user's posts
   };
 
-  // const getPendingRequests = async () => {
-  //   try {
-  //     const response = await fetch(
-  //       //removed ${loggedInUser._id} from the fetch
-  //       `${import.meta.env.VITE_API_URL}users/pendingRequests`, 
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //           "Content-Type": "application/json"
-  //         },
-  //         // body: JSON.stringify({ userId: loggedInUser._id }), // Send userId in body
-  //       }
-  //     );
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`);
-  //     }
-  //     const data = await response.json();
-  //     setPendingRequests(data);
-  //   } catch (error) {
-  //     console.error("Error fetching pending requests:", error);
-  //   }
-  // };
-
   useEffect(() => {
     getUser();
-    fetchUserPosts(); // Fetch user's posts when the component mounts
-     // Fetch pending requests //getPendingRequests(); // return: pendingRequests={pendingRequests} // Pass pendingRequests to FriendListWidget
+    fetchUserPosts();
   }, []);
 
   if (!user || userId === undefined) return null;

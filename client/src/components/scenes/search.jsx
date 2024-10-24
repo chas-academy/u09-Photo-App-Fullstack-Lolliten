@@ -1,9 +1,9 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { Box, Typography, CircularProgress } from '@mui/material';
+import React from "react";
+import { useSelector } from "react-redux";
+import { Box, Typography, CircularProgress } from "@mui/material";
 
 const SearchResults = () => {
-  const { searchLoading, searchError } = useSelector((state) => state.search); //took away searchResult
+  const { searchLoading, searchError } = useSelector((state) => state.search);
 
   if (searchLoading) {
     return <CircularProgress />;
@@ -17,7 +17,7 @@ const SearchResults = () => {
     <Box>
       <Typography variant="h4">Search Results</Typography>
       {searchResults.length === 0 ? (
-        <Typography>No results found... Sorry</Typography>
+        <Typography>No results found...</Typography>
       ) : (
         searchResults.map((user) => (
           <Box key={user._id} mb={2}>

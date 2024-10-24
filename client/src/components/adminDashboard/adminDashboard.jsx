@@ -11,6 +11,7 @@ import {
   TableRow,
   Paper,
   Snackbar,
+  useMediaQuery,
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { useSelector } from "react-redux";
@@ -21,6 +22,7 @@ const AdminDashboard = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const token = useSelector((state) => state.token);
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   // const userRole = useSelector((state) => state.user?.role); // Assuming role is stored in user state
   // const navigate = useNavigate();
 
@@ -91,11 +93,11 @@ const AdminDashboard = () => {
   return (
     <>
       <Navbar />
-      <Box p={3}>
-        <Typography variant="h4" gutterBottom>
+      <Box sx={{ p: { xs: 1, sm: 2, md: 3 } }}>
+      <Typography variant={isMobile ? "h5" : "h4"} gutterBottom>
           Admin Dashboard
         </Typography>
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{ overflowX: "auto" }}>
           <Table>
             <TableHead>
               <TableRow>
